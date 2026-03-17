@@ -1608,95 +1608,120 @@ async function doExportPDF() {
   btn.textContent = '...';
   btn.style.pointerEvents = 'none';
 
-  const statsEl = document.getElementById('screen-stats');
-  const zoomBar   = document.querySelector('.zoom-bar');
-  const rangeBar  = document.querySelector('.stats-range');
-  const customRow = document.getElementById('custom-range-row');
+  // Helper: copy a Chart.js canvas onto a white background and return JPEG data URL
+  function chartToJpeg(canvasId) {
+    const src = document.getElementById(canvasId);
+    if (!src || !src.width || !src.height) return null;
+    const tmp = document.createElement('canvas');
+    tmp.width  = src.width;
+    tmp.height = src.height;
+    const ctx = tmp.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, tmp.width, tmp.height);
+    ctx.drawImage(src, 0, 0);
+    return tmp.toDataURL('image/jpeg', 0.97);
+  }
 
   try {
-    // 1) Force light mode for charts and UI elements
+    // 1) Re-render all charts in forced light mode
     pdfExportMode = true;
-    statsEl.classList.add('pdf-capture-mode');
     renderStats();
-    await new Promise(r => setTimeout(r, 450)); // wait for Chart.js to finish drawing
+    // Wait for Chart.js animation frames to complete (two rAF cycles + buffer)
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 120))));
 
-    // 2) Hide UI-only elements
-    zoomBar.style.display = 'none';
-    rangeBar.style.display = 'none';
-    const customDisplay = customRow.style.display;
-    customRow.style.display = 'none';
+    // 2) Grab each chart canvas as a white-background JPEG
+    const imgSym  = chartToJpeg('symptomChart');
+    const imgTh1  = chartToJpeg('therapyChart1');
+    const imgLung = chartToJpeg('lungChart');
+    const imgTh2  = chartToJpeg('therapyChart2');
 
-    // 3) Capture
-    const captureCanvas = await html2canvas(statsEl, {
-      scale: 2.5, useCORS: true, backgroundColor: '#ffffff',
-      width: statsEl.scrollWidth, height: statsEl.scrollHeight,
-      windowWidth: statsEl.scrollWidth, logging: false
-    });
-
-    // 4) Restore
-    zoomBar.style.display = '';
-    rangeBar.style.display = '';
-    customRow.style.display = customDisplay;
+    // 3) Restore user colour scheme
     pdfExportMode = false;
-    statsEl.classList.remove('pdf-capture-mode');
-    renderStats(); // re-render with original colours
+    renderStats();
 
-    // 5) Build PDF
-    const imgData = captureCanvas.toDataURL('image/jpeg', 0.92);
+    // 4) Compose PDF
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pageW = pdf.internal.pageSize.getWidth();
-    const pageH = pdf.internal.pageSize.getHeight();
-    const margin = 10;
-    const imgW = pageW - margin * 2;
-    const imgH = (captureCanvas.height / captureCanvas.width) * imgW;
+    const pdf   = new jsPDF('p', 'mm', 'a4');
+    const PW    = 210, PH = 297;
+    const MX    = 10, MY = 10;          // left/top margin
+    const UW    = PW - MX * 2;          // usable width = 190 mm
+    const LBLW  = 7;                    // vertical-label column width
+    const CX    = MX + LBLW + 1;        // chart left edge
+    const CW    = UW - LBLW - 1;        // chart width
 
-    // Header
-    pdf.setFontSize(13);
-    pdf.setTextColor(29, 158, 117);
-    pdf.text('Youkidoc Allergie Beschwerdetagebuch', margin, margin + 6);
-    let headerY = margin + 6;
-    pdf.setFontSize(10);
-    pdf.setTextColor(80);
+    // ── Header ──────────────────────────────────────────────────────────
+    let y = MY + 6;
+    pdf.setFontSize(13); pdf.setTextColor(29, 158, 117);
+    pdf.text('Youkidoc Allergie Beschwerdetagebuch', MX, y);
+    pdf.setFontSize(10); pdf.setTextColor(70); pdf.setFont(undefined, 'normal');
     if (patientName) {
-      headerY += 6;
-      pdf.setFontSize(11);
-      pdf.setFont(undefined, 'bold');
-      pdf.text(`Patient: ${patientName}`, margin, headerY);
-      pdf.setFont(undefined, 'normal');
-      pdf.setFontSize(10);
+      y += 5.5; pdf.setFontSize(11); pdf.setFont(undefined, 'bold');
+      pdf.text(`Patient/in: ${patientName}`, MX, y);
+      pdf.setFont(undefined, 'normal'); pdf.setFontSize(10);
     }
     const allDates = getActiveDates();
-    const visibleDates = allDates.slice(zoomStart, zoomEnd || allDates.length);
-    if (visibleDates.length) {
-      headerY += 5.5;
-      pdf.text(`Zeitraum: ${formatDateDE(visibleDates[0])} – ${formatDateDE(visibleDates[visibleDates.length-1])}`, margin, headerY);
+    const visDates = allDates.slice(zoomStart, zoomEnd || allDates.length);
+    if (visDates.length) {
+      y += 5; pdf.text(`Zeitraum: ${formatDateDE(visDates[0])} – ${formatDateDE(visDates[visDates.length-1])}`, MX, y);
     }
-    headerY += 5;
-    pdf.text(`Erstellt: ${formatDateDE(todayStr())}`, margin, headerY);
+    y += 4.5; pdf.setTextColor(130); pdf.setFontSize(9);
+    pdf.text(`Erstellt: ${formatDateDE(todayStr())}`, MX, y);
+    y += 3; pdf.setDrawColor(200,200,200); pdf.line(MX, y, PW - MX, y);
+    y += 4;
 
-    // Divider line
-    headerY += 3;
-    pdf.setDrawColor(220, 220, 220);
-    pdf.line(margin, headerY, pageW - margin, headerY);
-    headerY += 4;
+    // ── Charts ────────────────────────────────────────────────────────────
+    // Distribute remaining vertical space proportionally (leave 22mm for legend + footer)
+    const chartAreaH = PH - y - MY - 22;
+    const screenPx   = { sym: 175, th1: 70, lung: 110, th2: 115 };
+    const totalPx    = Object.values(screenPx).reduce((a,b)=>a+b,0);
+    const gap        = 2.5; // mm between charts
+    const totalGaps  = 3 * gap;
+    const scale      = (chartAreaH - totalGaps) / totalPx;
+    const CH = { sym: screenPx.sym*scale, th1: screenPx.th1*scale, lung: screenPx.lung*scale, th2: screenPx.th2*scale };
 
-    // Chart image — scale to fit remaining page
-    const available = pageH - headerY - margin;
-    const finalH = imgH > available ? available : imgH;
-    const finalW = imgH > available ? (captureCanvas.width / captureCanvas.height) * available : imgW;
-    pdf.addImage(imgData, 'JPEG', margin, headerY, finalW, finalH);
+    // Vertical rotated label helper
+    function vLabel(text, cy, ch) {
+      pdf.setFontSize(7); pdf.setTextColor(100);
+      pdf.text(text, MX + LBLW - 1, cy + ch / 2, { angle: 90, align: 'center' });
+    }
 
-    // Tiny footer
-    pdf.setFontSize(7);
-    pdf.setTextColor(180);
-    pdf.text('Youkidoc Allergie Beschwerdetagebuch – youkidoc.ch', margin, pageH - 5);
+    const charts = [
+      { img: imgSym,  label: 'Augen, Nase, Haut', h: CH.sym  },
+      { img: imgTh1,  label: 'Therapie',           h: CH.th1  },
+      { img: imgLung, label: 'Lunge',               h: CH.lung },
+      { img: imgTh2,  label: 'Therapie',            h: CH.th2  },
+    ];
+    for (const c of charts) {
+      vLabel(c.label, y, c.h);
+      if (c.img) pdf.addImage(c.img, 'JPEG', CX, y, CW, c.h);
+      y += c.h + gap;
+    }
+    y += 1;
 
-    // 6) Save / Share
+    // ── Legend ─────────────────────────────────────────────────────────
+    pdf.setFontSize(7); pdf.setTextColor(80);
+    const allLegend = [
+      ...Object.entries(ORGAN_LABELS).map(([k,v]) => ({ color: ORGAN_COLORS[k], label: v })),
+      ...LUNG_SYMPTOMS.map(s => ({ color: s.color, label: s.label })),
+      ...THERAPY_LIST.map(t => ({ color: t.color, label: `${t.short} ${t.label}` })),
+    ];
+    const dotR = 1.2, colW = UW / 3, rowH = 4.5;
+    allLegend.forEach((item, i) => {
+      const col = i % 3, row = Math.floor(i / 3);
+      const lx = MX + col * colW, ly = y + row * rowH;
+      const [r,g,b] = item.color.match(/\w\w/g).slice(0,3).map(h=>parseInt(h,16));
+      pdf.setFillColor(r,g,b); pdf.circle(lx + dotR, ly + 0.5, dotR, 'F');
+      pdf.setTextColor(60); pdf.text(item.label, lx + dotR * 2 + 1, ly + 1);
+    });
+
+    // ── Footer ──────────────────────────────────────────────────────────
+    pdf.setFontSize(7); pdf.setTextColor(180);
+    pdf.text('Youkidoc Allergie Beschwerdetagebuch – youkidoc.ch', MX, PH - 5);
+
+    // 5) Save / Share
     const filename = `youkidoc_${patientName ? patientName.replace(/\s+/g,'_') + '_' : ''}${todayStr()}.pdf`;
 
     if (emailAddr) {
-      // Try Web Share API (works great on iOS/Android)
       const pdfBlob = pdf.output('blob');
       const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
       if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
@@ -1707,10 +1732,9 @@ async function doExportPDF() {
         });
         showToast('PDF geteilt');
       } else {
-        // Fallback: download + open mail client
         pdf.save(filename);
         const subject = encodeURIComponent(`Beschwerdetagebuch${patientName ? ' – ' + patientName : ''}`);
-        const body = encodeURIComponent(`Guten Tag,\n\nim Anhang finden Sie den Beschwerdetagebuch-Report${patientName ? ' von ' + patientName : ''}.\n\nMit freundlichen Grüssen`);
+        const body    = encodeURIComponent(`Guten Tag,\n\nim Anhang finden Sie den Beschwerdetagebuch-Report${patientName ? ' von ' + patientName : ''}.\n\nMit freundlichen Grüssen`);
         setTimeout(() => { window.location.href = `mailto:${emailAddr}?subject=${subject}&body=${body}`; }, 800);
         showToast('PDF heruntergeladen – E-Mail wird geöffnet');
       }
@@ -1718,12 +1742,10 @@ async function doExportPDF() {
       pdf.save(filename);
       showToast('PDF exportiert');
     }
+
   } catch (err) {
-    console.error(err);
+    console.error('PDF Export Fehler:', err);
     pdfExportMode = false;
-    statsEl.classList.remove('pdf-capture-mode');
-    zoomBar.style.display = '';
-    rangeBar.style.display = '';
     renderStats();
     showToast('PDF-Export fehlgeschlagen');
   }
