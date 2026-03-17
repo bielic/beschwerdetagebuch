@@ -343,10 +343,10 @@
   }
   .chart-canvas-wrap { flex: 1; position: relative; min-width: 0; }
   .chart-canvas-wrap canvas { width: 100% !important; }
-  .chart-row-organ .chart-canvas-wrap { height: 140px; }
+  .chart-row-organ .chart-canvas-wrap { height: 175px; }
   .chart-row-th1 .chart-canvas-wrap { height: 70px; }
   .chart-row-lung .chart-canvas-wrap { height: 110px; }
-  .chart-row-th2 .chart-canvas-wrap { height: 70px; }
+  .chart-row-th2 .chart-canvas-wrap { height: 115px; }
   .stats-shared-legend {
     display: flex; flex-wrap: wrap; gap: 6px 12px; padding: 8px 8px 4px;
     justify-content: center;
@@ -670,9 +670,7 @@
       <button class="zoom-btn pdf-btn" onclick="exportStatsPDF()" title="PDF Export">PDF</button>
     </div>
     <div class="stats-charts" id="stats-charts">
-      <!-- X-axis labels top -->
-      <div class="chart-row" id="x-axis-top-row" style="margin-left:18px; height:20px;"><canvas id="xAxisTopCanvas" style="width:100%;height:20px;"></canvas></div>
-      <!-- 1. Beschwerden: Augen, Nase, Haut -->
+      <!-- 1. Beschwerden: Augen, Nase, Haut (x-axis top: year + month) -->
       <div class="chart-row chart-row-organ">
         <div class="chart-vlabel">Augen, Nase, Haut</div>
         <div class="chart-canvas-wrap"><canvas id="symptomChart"></canvas></div>
@@ -687,13 +685,11 @@
         <div class="chart-vlabel">Lunge</div>
         <div class="chart-canvas-wrap"><canvas id="lungChart"></canvas></div>
       </div>
-      <!-- 4. Therapie: IN, ID, B -->
+      <!-- 4. Therapie: IN, ID, B (x-axis bottom: dates) -->
       <div class="chart-row chart-row-th2">
         <div class="chart-vlabel">Therapie</div>
         <div class="chart-canvas-wrap"><canvas id="therapyChart2"></canvas></div>
       </div>
-      <!-- X-axis labels bottom -->
-      <div class="chart-row" style="margin-left:18px; height:24px;"><canvas id="xAxisBottomCanvas" style="width:100%;height:24px;"></canvas></div>
     </div>
     <!-- Shared legend -->
     <div class="stats-shared-legend" id="shared-legend"></div>
@@ -722,7 +718,7 @@
       </div>
     </div>
 
-    <div class="info-version" id="app-version">Youkidoc Allergie Beschwerdetagebuch v1.0</div>
+    <div class="info-version" id="app-version">Youkidoc Allergie Beschwerdetagebuch v1.1</div>
   </div>
 
   <!-- DATA SCREEN -->
@@ -873,8 +869,6 @@ let statsRange = 30;
 let chartSymptom = null;
 let chartTherapy1 = null;
 let chartTherapy2 = null;
-let chartXTop = null;
-let chartXBottom = null;
 let calSelected = null;
 let calDisplayYear = new Date().getFullYear();
 let calDisplayMonth = new Date().getMonth();
@@ -1293,16 +1287,24 @@ function renderStats() {
   const end = zoomEnd || allDates.length;
   const dates = allDates.slice(zoomStart, end);
   const MONAT_NAMEN = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-  const useMonthLabels = dates.length > 90;
-  const labels = dates.map(d => {
+  const labels = dates.map(d => { const [y,m,day]=d.split('-'); return `${day}.${m}`; });
+  let lastYear = '';
+  const monthLabels = dates.map(d => {
     const [y,m,day] = d.split('-');
-    if (useMonthLabels) {
-      return day === '01' ? MONAT_NAMEN[parseInt(m)-1] : '';
+    if (day === '01') {
+      const label = MONAT_NAMEN[parseInt(m)-1];
+      if (y !== lastYear) { lastYear = y; return y + '\n' + label; }
+      return label;
     }
-    return `${day}.${m}`;
+    return '';
   });
+  // Ensure first entry shows year if no month-start was hit yet
+  if (monthLabels.every(l => !l.includes('20'))) {
+    const [y] = dates[0].split('-');
+    monthLabels[0] = y;
+  }
   const numDates = dates.length;
-  const shouldSkip = useMonthLabels ? false : numDates > 14;
+  const shouldSkip = numDates > 14;
 
   const zl = document.getElementById('zoom-label');
   if (zoomEnd && (zoomEnd - zoomStart < allDates.length)) {
@@ -1373,7 +1375,7 @@ function renderStats() {
     });
   }
 
-  // 1) Organ symptom chart
+  // 1) Organ symptom chart (x-axis top = year + month names)
   if (chartSymptom) chartSymptom.destroy();
   chartSymptom = new Chart(document.getElementById('symptomChart'), {
     type: 'line',
@@ -1391,7 +1393,31 @@ function renderStats() {
       plugins: { legend: { display: false } },
       scales: {
         y: { min:0, beginAtZero:true, ticks:{ font:{size:9}, color: tickColor }, grid:{color: gridColor} },
-        x: xTop
+        x: {
+          position: 'top',
+          afterBuildTicks: axis => {
+            axis.ticks = dates.reduce((acc, d, i) => {
+              const [,m,day] = d.split('-');
+              if (day === '01' || i === 0) acc.push({ value: i });
+              return acc;
+            }, []);
+          },
+          ticks: {
+            font:{size:8}, color: tickColor, maxRotation: 0, autoSkip: false,
+            callback: (value, index, allTicks) => {
+              // For category axis: value = label string; numeric index is in allTicks[index].value
+              const dateIdx = allTicks[index] ? allTicks[index].value : -1;
+              const d = dates[dateIdx];
+              if (!d) return '';
+              const [y,m] = d.split('-');
+              const mon = MONAT_NAMEN[parseInt(m)-1];
+              const prevTick = allTicks[index - 1];
+              const prevYear = prevTick ? (dates[prevTick.value] || '').split('-')[0] : '';
+              return (y !== prevYear) ? [y, mon] : mon;
+            }
+          },
+          grid: { color: gridColor }
+        }
       }
     }
   });
@@ -1425,24 +1451,51 @@ function renderStats() {
     }
   });
 
-  // 4) Therapy group 2: IN, ID, B
-  chartTherapy2 = makeTherapyChart('therapyChart2', THERAPY_GROUP2, chartTherapy2);
-
-  // X-axis bottom (label-only chart)
-  if (chartXBottom) chartXBottom.destroy();
-  chartXBottom = new Chart(document.getElementById('xAxisBottomCanvas'), {
+  // 4) Therapy group 2: IN, ID, B (with date x-axis at bottom)
+  if (chartTherapy2) chartTherapy2.destroy();
+  chartTherapy2 = new Chart(document.getElementById('therapyChart2'), {
     type: 'scatter',
-    data: { datasets: [{ data: [] }] },
+    data: {
+      datasets: THERAPY_GROUP2.map((t, ti) => ({
+        label: t.label,
+        data: dates.map((d, di) =>
+          db[d] && db[d].therapies && db[d].therapies[t.key] ? { x: di, y: ti } : null
+        ).filter(Boolean),
+        backgroundColor: t.color, borderColor: t.color,
+        pointStyle: 'rectRounded', pointRadius: 6, pointHoverRadius: 8, showLine: false
+      }))
+    },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { title: ctx => labels[ctx[0].parsed.x] || '', label: ctx => ctx.dataset.label } }
+      },
       scales: {
-        y: { display: false },
+        y: {
+          min: -0.5, max: THERAPY_GROUP2.length - 0.5,
+          afterBuildTicks: axis => { axis.ticks = THERAPY_GROUP2.map((t, i) => ({ value: i })); },
+          ticks: { font: { size: 9, weight: 'bold' }, color: tickColor, callback: v => THERAPY_GROUP2[v] ? THERAPY_GROUP2[v].short : '' },
+          grid: { color: gridColorLight }
+        },
         x: {
+          type: 'linear',
           min: -0.5, max: dates.length - 0.5,
-          ticks: { font:{size:8}, maxRotation:45, autoSkip: shouldSkip, stepSize:1, color: tickColor,
-            callback: v => labels[v] || '' },
-          grid: { display: false }
+          afterBuildTicks: axis => {
+            axis.ticks = dates.reduce((acc, d, i) => {
+              const [,m,day] = d.split('-');
+              if (day === '01' || i === 0) acc.push({ value: i });
+              return acc;
+            }, []);
+          },
+          ticks: {
+            font:{size:8}, maxRotation:45, color: tickColor, autoSkip: false,
+            callback: (value) => {
+              const i = Math.round(value);
+              if (i < 0 || i >= labels.length) return '';
+              return labels[i];
+            }
+          },
+          grid: { color: gridColor }
         }
       }
     }
