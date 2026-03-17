@@ -533,6 +533,11 @@
       <div class="date-badge" id="home-date" onclick="showScreen('cal')" style="cursor:pointer;"></div>
     </div>
 
+    <div class="copy-bar">
+      <button class="copy-btn" onclick="copyFromYesterday()">Vortag übernehmen</button>
+      <label class="auto-copy-label"><input type="checkbox" id="auto-copy-check" onchange="saveAutoCopy()">Automatisch übernehmen</label>
+    </div>
+
     <div class="section-label">Allergiebeschwerden</div>
 
     <div class="organ-block">
