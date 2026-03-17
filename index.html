@@ -985,6 +985,8 @@ let therapyLongPressed = false;
 
 document.querySelectorAll('.therapy-btn').forEach(btn => {
   btn.addEventListener('pointerdown', function(e) {
+    // Prevent iOS text-selection from starting on long press
+    e.preventDefault();
     therapyLongPressed = false;
     const key = this.dataset.therapy;
     therapyPressTimer = setTimeout(() => {
@@ -997,6 +999,9 @@ document.querySelectorAll('.therapy-btn').forEach(btn => {
     if (!therapyLongPressed) {
       this.classList.toggle('active');
     }
+  });
+  btn.addEventListener('pointercancel', function() {
+    clearTimeout(therapyPressTimer);
   });
   btn.addEventListener('pointerleave', function() {
     clearTimeout(therapyPressTimer);
