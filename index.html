@@ -1180,9 +1180,9 @@ const THERAPY_INFO = {
   biologikum: 'Omalizumab\u2122, Dupixent\u2122, Nucala\u2122'
 };
 let chartLung = null;
-const THERAPY_GROUP1_ORDER = ['antihistaminikum','augentropfen','nasenspray'];
+const THERAPY_GROUP1_ORDER = ['nasenspray','augentropfen','antihistaminikum'];
 const THERAPY_GROUP1 = THERAPY_GROUP1_ORDER.map(k => THERAPY_LIST.find(t => t.key === k));
-const THERAPY_GROUP2_ORDER = ['inhalation_notfall','inhalation_kortison','biologikum'];
+const THERAPY_GROUP2_ORDER = ['biologikum','inhalation_kortison','inhalation_notfall'];
 const THERAPY_GROUP2 = THERAPY_GROUP2_ORDER.map(k => THERAPY_LIST.find(t => t.key === k));
 
 // Zoom state
