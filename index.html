@@ -1292,9 +1292,17 @@ function renderStats() {
 
   const end = zoomEnd || allDates.length;
   const dates = allDates.slice(zoomStart, end);
-  const labels = dates.map(d => { const [y,m,day]=d.split('-'); return `${day}.${m}`; });
+  const MONAT_NAMEN = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  const useMonthLabels = dates.length > 90;
+  const labels = dates.map(d => {
+    const [y,m,day] = d.split('-');
+    if (useMonthLabels) {
+      return day === '01' ? MONAT_NAMEN[parseInt(m)-1] : '';
+    }
+    return `${day}.${m}`;
+  });
   const numDates = dates.length;
-  const shouldSkip = numDates > 14;
+  const shouldSkip = useMonthLabels ? false : numDates > 14;
 
   const zl = document.getElementById('zoom-label');
   if (zoomEnd && (zoomEnd - zoomStart < allDates.length)) {
