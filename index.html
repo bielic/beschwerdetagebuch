@@ -395,6 +395,29 @@
   }
   .toggle-switch.active::after { transform: translateX(20px); }
 
+  /* Therapy info popup */
+  .therapy-info-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+  }
+  .therapy-info-overlay.show { opacity: 1; pointer-events: auto; }
+  .therapy-info-box {
+    background: #fff; border-radius: 14px; padding: 18px 16px;
+    width: calc(100% - 48px); max-width: 340px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    transform: scale(0.92); transition: transform 0.2s ease;
+  }
+  .therapy-info-overlay.show .therapy-info-box { transform: scale(1); }
+  .therapy-info-title { font-size: 14px; font-weight: 700; color: #1D9E75; margin-bottom: 8px; }
+  .therapy-info-text { font-size: 13px; color: #444; line-height: 1.6; }
+  .therapy-info-text a { color: #1D9E75; text-decoration: underline; }
+  .therapy-info-close {
+    margin-top: 14px; width: 100%; padding: 10px; border: none; border-radius: 10px;
+    background: #f0f0f0; color: #333; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+
   /* Data management screen */
   .data-card {
     margin: 12px 16px; padding: 16px; background: #fff;
