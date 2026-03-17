@@ -864,9 +864,44 @@ document.querySelectorAll('.symptom-slider').forEach(sl => {
   });
 });
 
+// Therapy buttons: tap to toggle, long-press for info
+let therapyPressTimer = null;
+let therapyLongPressed = false;
+
 document.querySelectorAll('.therapy-btn').forEach(btn => {
-  btn.addEventListener('click', function() { this.classList.toggle('active'); });
+  btn.addEventListener('pointerdown', function(e) {
+    therapyLongPressed = false;
+    const key = this.dataset.therapy;
+    therapyPressTimer = setTimeout(() => {
+      therapyLongPressed = true;
+      showTherapyInfo(key);
+    }, 500);
+  });
+  btn.addEventListener('pointerup', function(e) {
+    clearTimeout(therapyPressTimer);
+    if (!therapyLongPressed) {
+      this.classList.toggle('active');
+    }
+  });
+  btn.addEventListener('pointerleave', function() {
+    clearTimeout(therapyPressTimer);
+  });
+  // Prevent context menu on long press (mobile)
+  btn.addEventListener('contextmenu', function(e) { e.preventDefault(); });
 });
+
+function showTherapyInfo(key) {
+  const therapy = THERAPY_LIST.find(t => t.key === key);
+  if (!therapy || !THERAPY_INFO[key]) return;
+  document.getElementById('therapy-info-title').textContent = therapy.label;
+  document.getElementById('therapy-info-text').innerHTML = THERAPY_INFO[key];
+  document.getElementById('therapy-info-overlay').classList.add('show');
+}
+
+function closeTherapyInfo(e) {
+  if (e && e.target !== document.getElementById('therapy-info-overlay') && !e.target.classList.contains('therapy-info-close')) return;
+  document.getElementById('therapy-info-overlay').classList.remove('show');
+}
 
 function collectFormData() {
   const symptoms = {};
