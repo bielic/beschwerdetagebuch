@@ -17,7 +17,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f8; display: flex; justify-content: center; }
   #app { max-width: 480px; width: 100%; min-height: 100dvh; display: flex; flex-direction: column; background: #fff; position: relative; }
-  .screen { display: none; flex-direction: column; flex: 1; overflow-y: auto; padding-bottom: 92px; animation: fadeIn 0.3s ease-in-out; }
+  .screen { display: none; flex-direction: column; flex: 1; overflow-y: auto; padding-bottom: 72px; animation: fadeIn 0.3s ease-in-out; }
   .screen.active { display: flex; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -223,25 +223,29 @@
     backdrop-filter: blur(10px);
     border-top: 1px solid #eee;
     display: flex;
-    flex-direction: column;
     z-index: 20;
   }
 
-  .nav-row { display: flex; width: 100%; }
-
-  .lang-bar {
-    display: flex; justify-content: center; gap: 5px;
-    padding: 4px 16px 2px; border-bottom: 1px solid #f0f0f0;
-    order: -1;
+  /* Language selection screen */
+  .lang-screen-grid {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 16px;
   }
-  .lang-opt {
-    padding: 2px 8px; border: 1.5px solid #ddd; border-radius: 8px;
-    font-size: 10px; font-weight: 700; cursor: pointer;
-    background: transparent; color: #999; font-family: inherit;
-    transition: all 0.15s; line-height: 1.6;
+  .lang-card {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px; border-radius: 14px;
+    border: 2px solid #eee; background: #fff;
+    cursor: pointer; transition: all 0.18s;
+    font-family: inherit;
   }
-  .lang-opt.active { background: #1D9E75; color: #fff; border-color: #1D9E75; }
-  .lang-opt:active { transform: scale(0.93); }
+  .lang-card:active { transform: scale(0.97); }
+  .lang-card.active { border-color: #1D9E75; background: #f0faf6; }
+  .lang-card-flag { font-size: 28px; line-height: 1; }
+  .lang-card-info { flex: 1; text-align: left; }
+  .lang-card-name { font-size: 16px; font-weight: 600; color: #222; }
+  .lang-card-native { font-size: 13px; color: #888; margin-top: 1px; }
+  .lang-card-check { font-size: 20px; color: #1D9E75; opacity: 0; transition: opacity 0.15s; }
+  .lang-card.active .lang-card-check { opacity: 1; }
 
   .nav-btn {
     flex: 1;
@@ -600,11 +604,12 @@
     .save-btn { background: linear-gradient(135deg, #1D9E75 0%, #15765f 100%); }
     .saved-toast { background: #1D9E75; }
     .bottom-nav { background: rgba(28, 28, 30, 0.95); border-color: #2c2c2e; }
-    .lang-bar { border-bottom-color: #3a3a3c; }
-    .lang-opt { background: transparent; border-color: #3a3a3c; color: #777; }
-    .lang-opt.active { background: #1D9E75; border-color: #1D9E75; color: #fff; }
     .nav-btn { color: #888; }
     .nav-btn.active { color: #4DCFA0; }
+    .lang-card { background: #1c1c1e; border-color: #3a3a3c; }
+    .lang-card.active { background: #0d2b22; border-color: #1D9E75; }
+    .lang-card-name { color: #f0f0f0; }
+    .lang-screen-grid { background: #000; }
     .cal-month-nav { border-color: #2c2c2e; }
     .cal-month-nav button { border-color: #3a3a3c; color: #f0f0f0; background: #2c2c2e; }
     .cal-month-title { color: #f5f5f5; }
@@ -920,16 +925,57 @@
     </div>
   </div>
 
+  <!-- LANGUAGE SCREEN -->
+  <div id="screen-lang" class="screen">
+    <div class="app-header">
+      <div class="app-subtitle" data-i18n="nav_lang">Sprache</div>
+    </div>
+    <div class="lang-screen-grid">
+      <button class="lang-card active" data-lang="de" onclick="applyLang('de')">
+        <span class="lang-card-flag">🇩🇪</span>
+        <div class="lang-card-info">
+          <div class="lang-card-name">Deutsch</div>
+          <div class="lang-card-native">German</div>
+        </div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="en" onclick="applyLang('en')">
+        <span class="lang-card-flag">🇬🇧</span>
+        <div class="lang-card-info">
+          <div class="lang-card-name">English</div>
+          <div class="lang-card-native">Englisch</div>
+        </div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="sq" onclick="applyLang('sq')">
+        <span class="lang-card-flag">🇦🇱</span>
+        <div class="lang-card-info">
+          <div class="lang-card-name">Shqip</div>
+          <div class="lang-card-native">Albanisch</div>
+        </div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="ta" onclick="applyLang('ta')">
+        <span class="lang-card-flag">🇱🇰</span>
+        <div class="lang-card-info">
+          <div class="lang-card-name">தமிழ்</div>
+          <div class="lang-card-native">Tamil</div>
+        </div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="es" onclick="applyLang('es')">
+        <span class="lang-card-flag">🇪🇸</span>
+        <div class="lang-card-info">
+          <div class="lang-card-name">Español</div>
+          <div class="lang-card-native">Spanisch</div>
+        </div>
+        <span class="lang-card-check">✓</span>
+      </button>
+    </div>
+  </div>
+
   <!-- BOTTOM NAV -->
   <div class="bottom-nav">
-    <div class="lang-bar">
-      <button class="lang-opt active" data-lang="de" onclick="applyLang('de')">🇩🇪 DE</button>
-      <button class="lang-opt" data-lang="en" onclick="applyLang('en')">🇬🇧 EN</button>
-      <button class="lang-opt" data-lang="sq" onclick="applyLang('sq')">🇦🇱 SQ</button>
-      <button class="lang-opt" data-lang="ta" onclick="applyLang('ta')">🇱🇰 TA</button>
-      <button class="lang-opt" data-lang="es" onclick="applyLang('es')">🇪🇸 ES</button>
-    </div>
-    <div class="nav-row">
     <button class="nav-btn active" id="nav-home" onclick="showScreen('home')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span data-i18n="nav_home">Heute</span>
@@ -954,7 +1000,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v6m0 0l3-3m-3 3L9 5"/><path d="M4 14h16"/><rect x="4" y="10" width="16" height="10" rx="2"/></svg>
       <span data-i18n="nav_data">Daten</span>
     </button>
-    </div>
+    <button class="nav-btn" id="nav-lang" onclick="showScreen('lang')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+      <span data-i18n="nav_lang">Sprache</span>
+    </button>
   </div>
 </div>
 
@@ -973,7 +1022,7 @@ if ('serviceWorker' in navigator) {
 // ── i18n ─────────────────────────────────────────────────────────────────────
 const TRANSLATIONS = {
   de: {
-    nav_home:'Heute', nav_cal:'Kalender', nav_stats:'Statistik', nav_reminder:'Erinnerung', nav_info:'Info', nav_data:'Daten',
+    nav_home:'Heute', nav_cal:'Kalender', nav_stats:'Statistik', nav_reminder:'Erinnerung', nav_info:'Info', nav_data:'Daten', nav_lang:'Sprache',
     app_subtitle:'Allergie Beschwerdetagebuch',
     copy_yesterday:'Vortag übernehmen', auto_copy:'Automatisch übernehmen',
     section_symptoms:'Allergiebeschwerden', section_therapy:'Therapie',
@@ -1025,7 +1074,7 @@ const TRANSLATIONS = {
     confirm_delete_all_body:'Einträge löschen? Nicht rückgängig machbar!', days_word:'Tage',
   },
   en: {
-    nav_home:'Today', nav_cal:'Calendar', nav_stats:'Statistics', nav_reminder:'Reminder', nav_info:'Info', nav_data:'Data',
+    nav_home:'Today', nav_cal:'Calendar', nav_stats:'Statistics', nav_reminder:'Reminder', nav_info:'Info', nav_data:'Data', nav_lang:'Language',
     app_subtitle:'Allergy Diary',
     copy_yesterday:'Copy from yesterday', auto_copy:'Auto copy',
     section_symptoms:'Allergy Symptoms', section_therapy:'Therapy',
@@ -1077,7 +1126,7 @@ const TRANSLATIONS = {
     confirm_delete_all_body:'Delete all entries? This cannot be undone!', days_word:'days',
   },
   sq: {
-    nav_home:'Sot', nav_cal:'Kalendar', nav_stats:'Statistika', nav_reminder:'Kujtim', nav_info:'Info', nav_data:'Të dhëna',
+    nav_home:'Sot', nav_cal:'Kalendar', nav_stats:'Statistika', nav_reminder:'Kujtim', nav_info:'Info', nav_data:'Të dhëna', nav_lang:'Gjuha',
     app_subtitle:'Ditar i Alergjisë',
     copy_yesterday:'Kopjo nga dje', auto_copy:'Kopjo automatikisht',
     section_symptoms:'Simptomat e Alergjisë', section_therapy:'Terapi',
@@ -1129,7 +1178,7 @@ const TRANSLATIONS = {
     confirm_delete_all_body:'Fshi të gjitha? Nuk mund të zhbëhet!', days_word:'ditë',
   },
   ta: {
-    nav_home:'இன்று', nav_cal:'நாட்காட்டி', nav_stats:'புள்ளியியல்', nav_reminder:'நினைவூட்டல்', nav_info:'தகவல்', nav_data:'தரவு',
+    nav_home:'இன்று', nav_cal:'நாட்காட்டி', nav_stats:'புள்ளியியல்', nav_reminder:'நினைவூட்டல்', nav_info:'தகவல்', nav_data:'தரவு', nav_lang:'மொழி',
     app_subtitle:'ஒவ்வாமை நாட்குறிப்பு',
     copy_yesterday:'நேற்றிலிருந்து நகல்', auto_copy:'தானியங்கி நகல்',
     section_symptoms:'ஒவ்வாமை அறிகுறிகள்', section_therapy:'சிகிச்சை',
@@ -1181,7 +1230,7 @@ const TRANSLATIONS = {
     confirm_delete_all_body:'அனைத்தையும் நீக்கவா? மீட்க முடியாது!', days_word:'நாட்கள்',
   },
   es: {
-    nav_home:'Hoy', nav_cal:'Calendario', nav_stats:'Estadísticas', nav_reminder:'Recordatorio', nav_info:'Info', nav_data:'Datos',
+    nav_home:'Hoy', nav_cal:'Calendario', nav_stats:'Estadísticas', nav_reminder:'Recordatorio', nav_info:'Info', nav_data:'Datos', nav_lang:'Idioma',
     app_subtitle:'Diario de Alergias',
     copy_yesterday:'Copiar del día anterior', auto_copy:'Copiar automáticamente',
     section_symptoms:'Síntomas de Alergia', section_therapy:'Terapia',
@@ -1255,9 +1304,9 @@ function applyLang(lang) {
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     el.placeholder = t(el.dataset.i18nPlaceholder);
   });
-  // Mark active lang button
-  document.querySelectorAll('.lang-opt').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.lang === lang);
+  // Mark active language card
+  document.querySelectorAll('.lang-card').forEach(card => {
+    card.classList.toggle('active', card.dataset.lang === lang);
   });
   // Update ORGAN_LABELS and LUNG_SYMPTOMS for chart legend/tooltips
   ORGAN_LABELS.augen = t('organ_augen');
