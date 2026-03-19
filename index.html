@@ -17,7 +17,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f8; display: flex; justify-content: center; }
   #app { max-width: 480px; width: 100%; min-height: 100dvh; display: flex; flex-direction: column; background: #fff; position: relative; }
-  .screen { display: none; flex-direction: column; flex: 1; overflow-y: auto; padding-bottom: 68px; animation: fadeIn 0.3s ease-in-out; }
+  .screen { display: none; flex-direction: column; flex: 1; overflow-y: auto; padding-bottom: 92px; animation: fadeIn 0.3s ease-in-out; }
   .screen.active { display: flex; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -223,8 +223,25 @@
     backdrop-filter: blur(10px);
     border-top: 1px solid #eee;
     display: flex;
+    flex-direction: column;
     z-index: 20;
   }
+
+  .nav-row { display: flex; width: 100%; }
+
+  .lang-bar {
+    display: flex; justify-content: center; gap: 5px;
+    padding: 4px 16px 2px; border-bottom: 1px solid #f0f0f0;
+    order: -1;
+  }
+  .lang-opt {
+    padding: 2px 8px; border: 1.5px solid #ddd; border-radius: 8px;
+    font-size: 10px; font-weight: 700; cursor: pointer;
+    background: transparent; color: #999; font-family: inherit;
+    transition: all 0.15s; line-height: 1.6;
+  }
+  .lang-opt.active { background: #1D9E75; color: #fff; border-color: #1D9E75; }
+  .lang-opt:active { transform: scale(0.93); }
 
   .nav-btn {
     flex: 1;
@@ -583,6 +600,9 @@
     .save-btn { background: linear-gradient(135deg, #1D9E75 0%, #15765f 100%); }
     .saved-toast { background: #1D9E75; }
     .bottom-nav { background: rgba(28, 28, 30, 0.95); border-color: #2c2c2e; }
+    .lang-bar { border-bottom-color: #3a3a3c; }
+    .lang-opt { background: transparent; border-color: #3a3a3c; color: #777; }
+    .lang-opt.active { background: #1D9E75; border-color: #1D9E75; color: #fff; }
     .nav-btn { color: #888; }
     .nav-btn.active { color: #4DCFA0; }
     .cal-month-nav { border-color: #2c2c2e; }
@@ -650,55 +670,55 @@
     </div>
 
     <div class="copy-bar">
-      <button class="copy-btn" onclick="copyFromYesterday()">Vortag übernehmen</button>
-      <label class="auto-copy-label"><input type="checkbox" id="auto-copy-check" onchange="saveAutoCopy()">Automatisch übernehmen</label>
+      <button class="copy-btn" onclick="copyFromYesterday()" data-i18n="copy_yesterday">Vortag übernehmen</button>
+      <label class="auto-copy-label"><input type="checkbox" id="auto-copy-check" onchange="saveAutoCopy()"><span data-i18n="auto_copy">Automatisch übernehmen</span></label>
     </div>
 
-    <div class="section-label">Allergiebeschwerden</div>
+    <div class="section-label" data-i18n="section_symptoms">Allergiebeschwerden</div>
 
     <div class="organ-block">
-      <div class="organ-title"><div class="organ-icon" style="background:#E6F1FB;">👁</div>Augen</div>
-      <div class="slider-row"><span class="slider-label">Beschwerden</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="augen" data-sym="score"><span class="slider-val">0</span></div>
-    </div>
-
-    <div class="organ-block">
-      <div class="organ-title"><div class="organ-icon" style="background:#FAEEDA;">👃</div>Nase</div>
-      <div class="slider-row"><span class="slider-label">Beschwerden</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="nase" data-sym="score"><span class="slider-val">0</span></div>
+      <div class="organ-title"><div class="organ-icon" style="background:#E6F1FB;">👁</div><span data-i18n="organ_augen">Augen</span></div>
+      <div class="slider-row"><span class="slider-label" data-i18n="sym_beschwerden">Beschwerden</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="augen" data-sym="score"><span class="slider-val">0</span></div>
     </div>
 
     <div class="organ-block">
-      <div class="organ-title"><div class="organ-icon" style="background:#E1F5EE;">🫁</div>Lunge</div>
-      <div class="slider-row"><span class="slider-label">Atemnot</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="lunge" data-sym="atemnot"><span class="slider-val">0</span></div>
-      <div class="slider-row"><span class="slider-label">Pfeifende Atmung</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="lunge" data-sym="pfeifend"><span class="slider-val">0</span></div>
-      <div class="slider-row"><span class="slider-label">Husten</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="lunge" data-sym="husten"><span class="slider-val">0</span></div>
+      <div class="organ-title"><div class="organ-icon" style="background:#FAEEDA;">👃</div><span data-i18n="organ_nase">Nase</span></div>
+      <div class="slider-row"><span class="slider-label" data-i18n="sym_beschwerden">Beschwerden</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="nase" data-sym="score"><span class="slider-val">0</span></div>
     </div>
 
     <div class="organ-block">
-      <div class="organ-title"><div class="organ-icon" style="background:#FAECE7;">🩹</div>Haut</div>
-      <div class="slider-row"><span class="slider-label">Beschwerden</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="haut" data-sym="score"><span class="slider-val">0</span></div>
+      <div class="organ-title"><div class="organ-icon" style="background:#E1F5EE;">🫁</div><span data-i18n="organ_lunge">Lunge</span></div>
+      <div class="slider-row"><span class="slider-label" data-i18n="sym_atemnot">Atemnot</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="lunge" data-sym="atemnot"><span class="slider-val">0</span></div>
+      <div class="slider-row"><span class="slider-label" data-i18n="sym_pfeifend">Pfeifende Atmung</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="lunge" data-sym="pfeifend"><span class="slider-val">0</span></div>
+      <div class="slider-row"><span class="slider-label" data-i18n="sym_husten">Husten</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="lunge" data-sym="husten"><span class="slider-val">0</span></div>
     </div>
 
-    <div class="section-label">Therapie <span style="font-weight:400;text-transform:none;letter-spacing:normal;font-size:9px;color:#bbb;">(für nähere Information gedrückt halten)</span></div>
+    <div class="organ-block">
+      <div class="organ-title"><div class="organ-icon" style="background:#FAECE7;">🩹</div><span data-i18n="organ_haut">Haut</span></div>
+      <div class="slider-row"><span class="slider-label" data-i18n="sym_beschwerden">Beschwerden</span><input type="range" min="0" max="100" value="0" step="1" class="symptom-slider" data-organ="haut" data-sym="score"><span class="slider-val">0</span></div>
+    </div>
+
+    <div class="section-label"><span data-i18n="section_therapy">Therapie</span> <span style="font-weight:400;text-transform:none;letter-spacing:normal;font-size:9px;color:#bbb;">(<span data-i18n="therapy_hint">für nähere Information gedrückt halten</span>)</span></div>
     <div class="therapy-grid">
-      <button class="therapy-btn" data-therapy="antihistaminikum"><span class="therapy-dot"></span>Antihistaminikum</button>
-      <button class="therapy-btn" data-therapy="augentropfen"><span class="therapy-dot"></span>Augentropfen</button>
-      <button class="therapy-btn" data-therapy="nasenspray"><span class="therapy-dot"></span>Nasenspray</button>
-      <button class="therapy-btn" data-therapy="inhalation_notfall"><span class="therapy-dot"></span>Inhalation (Bedarf/Notfall)</button>
-      <button class="therapy-btn" data-therapy="inhalation_kortison"><span class="therapy-dot"></span>Inhalation (Dauertherapie)</button>
-      <button class="therapy-btn" data-therapy="biologikum"><span class="therapy-dot"></span>Biologikum</button>
+      <button class="therapy-btn" data-therapy="antihistaminikum"><span class="therapy-dot"></span><span data-i18n="th_antihistaminikum">Antihistaminikum</span></button>
+      <button class="therapy-btn" data-therapy="augentropfen"><span class="therapy-dot"></span><span data-i18n="th_augentropfen">Augentropfen</span></button>
+      <button class="therapy-btn" data-therapy="nasenspray"><span class="therapy-dot"></span><span data-i18n="th_nasenspray">Nasenspray</span></button>
+      <button class="therapy-btn" data-therapy="inhalation_notfall"><span class="therapy-dot"></span><span data-i18n="th_inh_notfall">Inh. Bedarf/Notfall</span></button>
+      <button class="therapy-btn" data-therapy="inhalation_kortison"><span class="therapy-dot"></span><span data-i18n="th_inh_kortison">Inh. Dauertherapie</span></button>
+      <button class="therapy-btn" data-therapy="biologikum"><span class="therapy-dot"></span><span data-i18n="th_biologikum">Biologikum</span></button>
     </div>
 
     <div class="save-area">
-      <button class="save-btn" id="save-btn">Eintrag speichern</button>
-      <div class="saved-toast" id="saved-toast">✓ Gespeichert</div>
+      <button class="save-btn" id="save-btn" data-i18n="save_btn">Eintrag speichern</button>
+      <div class="saved-toast" id="saved-toast" data-i18n="saved_toast">✓ Gespeichert</div>
     </div>
   </div>
 
   <!-- CALENDAR SCREEN -->
   <div id="screen-cal" class="screen">
     <div class="app-header">
-      <div class="app-subtitle">Kalender</div>
-      <div style="font-size:12px;color:#999;margin-top:4px;">Datum wählen zum Nachtragen</div>
+      <div class="app-subtitle" data-i18n="nav_cal">Kalender</div>
+      <div style="font-size:12px;color:#999;margin-top:4px;" data-i18n="cal_hint">Datum wählen zum Nachtragen</div>
     </div>
     <div id="cal-container"></div>
   </div>
@@ -709,19 +729,19 @@
       <div class="app-subtitle">Statistik</div>
     </div>
     <div class="stats-range">
-      <button class="range-btn" data-days="7">7 Tage</button>
-      <button class="range-btn" data-days="14">14 Tage</button>
-      <button class="range-btn active" data-days="30">30 Tage</button>
-      <button class="range-btn" data-days="90">90 Tage</button>
+      <button class="range-btn" data-days="7" data-i18n="range_7d">7 Tage</button>
+      <button class="range-btn" data-days="14" data-i18n="range_14d">14 Tage</button>
+      <button class="range-btn active" data-days="30" data-i18n="range_30d">30 Tage</button>
+      <button class="range-btn" data-days="90" data-i18n="range_90d">90 Tage</button>
       <button class="range-btn" data-days="year" data-year="2024">2024</button>
       <button class="range-btn" data-days="year" data-year="2025">2025</button>
       <button class="range-btn" data-days="year" data-year="2026">2026</button>
-      <button class="range-btn" data-days="custom">Eigener Bereich</button>
+      <button class="range-btn" data-days="custom" data-i18n="range_custom">Eigener Bereich</button>
     </div>
     <div class="date-range-row" id="custom-range-row" style="display:none;">
-      <label>Von</label>
+      <label data-i18n="from">Von</label>
       <input type="date" id="stats-date-from">
-      <label>Bis</label>
+      <label data-i18n="to">Bis</label>
       <input type="date" id="stats-date-to">
     </div>
     <div class="zoom-bar">
@@ -734,22 +754,22 @@
     <div class="stats-charts" id="stats-charts">
       <!-- 1. Beschwerden: Augen, Nase, Haut (x-axis top: year + month) -->
       <div class="chart-row chart-row-organ">
-        <div class="chart-vlabel">Augen, Nase, Haut</div>
+        <div class="chart-vlabel" data-i18n="chart_organ">Augen, Nase, Haut</div>
         <div class="chart-canvas-wrap"><canvas id="symptomChart"></canvas></div>
       </div>
       <!-- 2. Therapie: AH, A, N -->
       <div class="chart-row chart-row-th1">
-        <div class="chart-vlabel">Therapie</div>
+        <div class="chart-vlabel" data-i18n="chart_therapy">Therapie</div>
         <div class="chart-canvas-wrap"><canvas id="therapyChart1"></canvas></div>
       </div>
       <!-- 3. Lunge -->
       <div class="chart-row chart-row-lung">
-        <div class="chart-vlabel">Lunge</div>
+        <div class="chart-vlabel" data-i18n="chart_lung">Lunge</div>
         <div class="chart-canvas-wrap"><canvas id="lungChart"></canvas></div>
       </div>
       <!-- 4. Therapie: IN, ID, B (x-axis bottom: dates) -->
       <div class="chart-row chart-row-th2">
-        <div class="chart-vlabel">Therapie</div>
+        <div class="chart-vlabel" data-i18n="chart_therapy">Therapie</div>
         <div class="chart-canvas-wrap"><canvas id="therapyChart2"></canvas></div>
       </div>
     </div>
@@ -760,16 +780,16 @@
   <!-- INFO SCREEN -->
   <div id="screen-info" class="screen">
     <div class="app-header">
-      <div class="app-subtitle">Info</div>
+      <div class="app-subtitle" data-i18n="nav_info">Info</div>
     </div>
 
     <div class="info-card">
-      <div class="info-role">Entwickelt von</div>
+      <div class="info-role" data-i18n="info_developed">Entwickelt von</div>
       <div class="info-name">Dr. med. et phil. Christian Bieli</div>
       <div class="info-specialty">Facharzt Kinder- und Jugendmedizin<br>Schwerpunkt Pädiatrische Pneumologie</div>
 
       <div class="info-contact">
-        <div class="info-contact-title">Kontakt</div>
+        <div class="info-contact-title" data-i18n="info_contact">Kontakt</div>
         <div class="info-line">
           Sprechstunde Pneumologie<br>
           Youkidoc<br>
@@ -780,55 +800,55 @@
       </div>
     </div>
 
-    <div class="info-version" id="app-version">Youkidoc Allergie Beschwerdetagebuch v1.4</div>
+    <div class="info-version" id="app-version">Youkidoc Allergie Beschwerdetagebuch v1.5</div>
   </div>
 
   <!-- DATA SCREEN -->
   <div id="screen-data" class="screen">
     <div class="app-header">
-      <div class="app-subtitle">Daten verwalten</div>
+      <div class="app-subtitle" data-i18n="data_subtitle">Daten verwalten</div>
     </div>
 
     <!-- CSV Export -->
     <div class="data-card">
-      <div class="data-card-title">📊 CSV-Export</div>
-      <div class="data-card-desc">Exportiere deine Einträge als CSV-Datei für einen bestimmten Zeitraum.</div>
+      <div class="data-card-title">📊 <span data-i18n="csv_title">CSV-Export</span></div>
+      <div class="data-card-desc" data-i18n="csv_desc">Exportiere deine Einträge als CSV-Datei für einen bestimmten Zeitraum.</div>
       <div class="data-card-row">
-        <label>Von</label>
+        <label data-i18n="from">Von</label>
         <input type="date" id="csv-from">
-        <label>Bis</label>
+        <label data-i18n="to">Bis</label>
         <input type="date" id="csv-to">
       </div>
-      <button class="data-action-btn primary" onclick="exportCSV()">CSV herunterladen</button>
+      <button class="data-action-btn primary" onclick="exportCSV()" data-i18n="csv_btn">CSV herunterladen</button>
     </div>
 
     <!-- JSON Backup -->
     <div class="data-card">
-      <div class="data-card-title">💾 Backup (JSON)</div>
-      <div class="data-card-desc">Lade alle gespeicherten Daten als JSON-Datei herunter.</div>
-      <button class="data-action-btn primary" onclick="exportJSON()">Backup herunterladen</button>
+      <div class="data-card-title">💾 <span data-i18n="backup_title">Backup (JSON)</span></div>
+      <div class="data-card-desc" data-i18n="backup_desc">Lade alle gespeicherten Daten als JSON-Datei herunter.</div>
+      <button class="data-action-btn primary" onclick="exportJSON()" data-i18n="backup_btn">Backup herunterladen</button>
     </div>
 
     <!-- JSON Import -->
     <div class="data-card">
-      <div class="data-card-title">📥 Daten importieren</div>
-      <div class="data-card-desc">Stelle Daten aus einem JSON-Backup wieder her. Bestehende Einträge für gleiche Tage werden überschrieben.</div>
+      <div class="data-card-title">📥 <span data-i18n="import_title">Daten importieren</span></div>
+      <div class="data-card-desc" data-i18n="import_desc">Stelle Daten aus einem JSON-Backup wieder her. Bestehende Einträge für gleiche Tage werden überschrieben.</div>
       <input type="file" accept=".json" id="import-file" class="data-file-input" onchange="importJSON(this)">
-      <label for="import-file" class="data-file-label">📂 JSON-Datei auswählen</label>
+      <label for="import-file" class="data-file-label" data-i18n="import_file_btn">📂 JSON-Datei auswählen</label>
     </div>
 
     <!-- Delete Data -->
     <div class="data-card">
-      <div class="data-card-title">🗑 Daten löschen</div>
-      <div class="data-card-desc">Lösche einen einzelnen Eintrag oder alle gespeicherten Daten.</div>
+      <div class="data-card-title">🗑 <span data-i18n="delete_title">Daten löschen</span></div>
+      <div class="data-card-desc" data-i18n="delete_desc">Lösche einen einzelnen Eintrag oder alle gespeicherten Daten.</div>
       <div class="data-delete-row">
         <select id="delete-select" class="data-delete-select">
-          <option value="">— Tag wählen —</option>
+          <option value="" data-i18n="select_day">— Tag wählen —</option>
         </select>
-        <button class="data-action-btn danger-outline" onclick="deleteSelected()">Löschen</button>
+        <button class="data-action-btn danger-outline" onclick="deleteSelected()" data-i18n="delete_btn">Löschen</button>
       </div>
       <div style="margin-top:12px;">
-        <button class="data-action-btn danger" onclick="deleteAll()">Alle Daten löschen</button>
+        <button class="data-action-btn danger" onclick="deleteAll()" data-i18n="delete_all_btn">Alle Daten löschen</button>
       </div>
     </div>
   </div>
@@ -836,20 +856,20 @@
   <!-- REMINDER SCREEN -->
   <div id="screen-reminder" class="screen">
     <div class="app-header">
-      <div class="app-subtitle">Erinnerung</div>
+      <div class="app-subtitle" data-i18n="nav_reminder">Erinnerung</div>
     </div>
 
     <div class="reminder-card">
-      <div class="reminder-title">Tägliche Erinnerung</div>
-      <div class="reminder-desc">Erhalte eine tägliche Benachrichtigung, damit du nicht vergisst, deine Allergiebeschwerden einzutragen.</div>
+      <div class="reminder-title" data-i18n="reminder_title_h">Tägliche Erinnerung</div>
+      <div class="reminder-desc" data-i18n="reminder_desc">Erhalte eine tägliche Benachrichtigung, damit du nicht vergisst, deine Allergiebeschwerden einzutragen.</div>
 
       <div class="reminder-toggle-row">
-        <span class="reminder-toggle-label">Erinnerung aktivieren</span>
+        <span class="reminder-toggle-label" data-i18n="reminder_enable">Erinnerung aktivieren</span>
         <div class="toggle-switch" id="reminder-toggle" onclick="toggleReminder()"></div>
       </div>
 
       <div class="reminder-time-row" style="margin-top:14px;">
-        <label>Uhrzeit</label>
+        <label data-i18n="time_label">Uhrzeit</label>
         <input type="time" id="reminder-time" value="19:00" onchange="saveReminderSettings()">
       </div>
 
@@ -857,24 +877,24 @@
     </div>
 
     <div class="reminder-card">
-      <div class="reminder-title">Hinweis</div>
-      <div class="reminder-desc">Die Erinnerung funktioniert über Browser-Benachrichtigungen. Dein Browser muss Benachrichtigungen erlauben und die App muss als PWA installiert sein, damit Erinnerungen zuverlässig funktionieren.</div>
+      <div class="reminder-title" data-i18n="note_title">Hinweis</div>
+      <div class="reminder-desc" data-i18n="note_desc">Die Erinnerung funktioniert über Browser-Benachrichtigungen. Dein Browser muss Benachrichtigungen erlauben und die App muss als PWA installiert sein, damit Erinnerungen zuverlässig funktionieren.</div>
     </div>
   </div>
 
   <!-- PDF EXPORT MODAL -->
   <div class="pdf-modal-overlay" id="pdf-modal-overlay" onclick="closePdfModal(event)">
     <div class="pdf-modal">
-      <div class="pdf-modal-title">📄 PDF Export</div>
-      <div class="pdf-modal-label">Patientenname</div>
-      <input type="text" class="pdf-modal-input" id="pdf-patient-name" placeholder="Optional – z.B. Max Mustermann" autocomplete="name">
+      <div class="pdf-modal-title" data-i18n="pdf_title">📄 PDF Export</div>
+      <div class="pdf-modal-label" data-i18n="pdf_patient_label">Patientenname</div>
+      <input type="text" class="pdf-modal-input" id="pdf-patient-name" data-i18n-placeholder="pdf_patient_ph" placeholder="Optional – z.B. Max Mustermann" autocomplete="name">
       <div class="pdf-modal-sep"></div>
-      <div class="pdf-modal-label">Email-Adresse</div>
-      <input type="email" class="pdf-modal-input" id="pdf-email" placeholder="Optional – z.B. arzt@klinik.ch" autocomplete="email">
-      <div class="pdf-modal-hint">Falls angegeben, wird eine Teilen-Option angeboten.</div>
+      <div class="pdf-modal-label" data-i18n="pdf_email_label">Email-Adresse</div>
+      <input type="email" class="pdf-modal-input" id="pdf-email" data-i18n-placeholder="pdf_email_ph" placeholder="Optional – z.B. arzt@klinik.ch" autocomplete="email">
+      <div class="pdf-modal-hint" data-i18n="pdf_hint">Falls angegeben, wird eine Teilen-Option angeboten.</div>
       <div class="pdf-modal-actions">
-        <button class="pdf-modal-cancel" onclick="closePdfModal()">Abbrechen</button>
-        <button class="pdf-modal-ok" onclick="doExportPDF()">Exportieren</button>
+        <button class="pdf-modal-cancel" onclick="closePdfModal()" data-i18n="cancel">Abbrechen</button>
+        <button class="pdf-modal-ok" onclick="doExportPDF()" data-i18n="pdf_export_btn">Exportieren</button>
       </div>
     </div>
   </div>
@@ -884,7 +904,7 @@
     <div class="therapy-info-box">
       <div class="therapy-info-title" id="therapy-info-title"></div>
       <div class="therapy-info-text" id="therapy-info-text"></div>
-      <button class="therapy-info-close" onclick="closeTherapyInfo()">Schliessen</button>
+      <button class="therapy-info-close" onclick="closeTherapyInfo()" data-i18n="close">Schliessen</button>
     </div>
   </div>
 
@@ -894,38 +914,47 @@
       <div class="confirm-title" id="confirm-title">Eintrag überschreiben?</div>
       <div class="confirm-msg" id="confirm-msg"></div>
       <div class="confirm-actions">
-        <button class="confirm-cancel" id="confirm-cancel">Abbrechen</button>
-        <button class="confirm-ok" id="confirm-ok">Überschreiben</button>
+        <button class="confirm-cancel" id="confirm-cancel" data-i18n="cancel">Abbrechen</button>
+        <button class="confirm-ok" id="confirm-ok" data-i18n="overwrite_btn">Überschreiben</button>
       </div>
     </div>
   </div>
 
   <!-- BOTTOM NAV -->
   <div class="bottom-nav">
+    <div class="lang-bar">
+      <button class="lang-opt active" data-lang="de" onclick="applyLang('de')">🇩🇪 DE</button>
+      <button class="lang-opt" data-lang="en" onclick="applyLang('en')">🇬🇧 EN</button>
+      <button class="lang-opt" data-lang="sq" onclick="applyLang('sq')">🇦🇱 SQ</button>
+      <button class="lang-opt" data-lang="ta" onclick="applyLang('ta')">🇱🇰 TA</button>
+      <button class="lang-opt" data-lang="es" onclick="applyLang('es')">🇪🇸 ES</button>
+    </div>
+    <div class="nav-row">
     <button class="nav-btn active" id="nav-home" onclick="showScreen('home')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Heute
+      <span data-i18n="nav_home">Heute</span>
     </button>
     <button class="nav-btn" id="nav-cal" onclick="showScreen('cal')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      Kalender
+      <span data-i18n="nav_cal">Kalender</span>
     </button>
     <button class="nav-btn" id="nav-stats" onclick="showScreen('stats')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      Statistik
+      <span data-i18n="nav_stats">Statistik</span>
     </button>
     <button class="nav-btn" id="nav-reminder" onclick="showScreen('reminder')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      Erinnerung
+      <span data-i18n="nav_reminder">Erinnerung</span>
     </button>
     <button class="nav-btn" id="nav-info" onclick="showScreen('info')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      Info
+      <span data-i18n="nav_info">Info</span>
     </button>
     <button class="nav-btn" id="nav-data" onclick="showScreen('data')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v6m0 0l3-3m-3 3L9 5"/><path d="M4 14h16"/><rect x="4" y="10" width="16" height="10" rx="2"/></svg>
-      Daten
+      <span data-i18n="nav_data">Daten</span>
     </button>
+    </div>
   </div>
 </div>
 
@@ -941,6 +970,321 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// ── i18n ─────────────────────────────────────────────────────────────────────
+const TRANSLATIONS = {
+  de: {
+    nav_home:'Heute', nav_cal:'Kalender', nav_stats:'Statistik', nav_reminder:'Erinnerung', nav_info:'Info', nav_data:'Daten',
+    app_subtitle:'Allergie Beschwerdetagebuch',
+    copy_yesterday:'Vortag übernehmen', auto_copy:'Automatisch übernehmen',
+    section_symptoms:'Allergiebeschwerden', section_therapy:'Therapie',
+    organ_augen:'Augen', organ_nase:'Nase', organ_lunge:'Lunge', organ_haut:'Haut',
+    sym_beschwerden:'Beschwerden', sym_atemnot:'Atemnot', sym_pfeifend:'Pfeifende Atmung', sym_husten:'Husten',
+    therapy_hint:'für nähere Information gedrückt halten',
+    th_antihistaminikum:'Antihistaminikum', th_augentropfen:'Augentropfen', th_nasenspray:'Nasenspray',
+    th_inh_notfall:'Inh. Bedarf/Notfall', th_inh_kortison:'Inh. Dauertherapie', th_biologikum:'Biologikum',
+    save_btn:'Eintrag speichern', saved_toast:'✓ Gespeichert',
+    cal_hint:'Datum wählen zum Nachtragen',
+    range_7d:'7 Tage', range_14d:'14 Tage', range_30d:'30 Tage', range_90d:'90 Tage',
+    range_custom:'Eigener Bereich', from:'Von', to:'Bis', all_days:'Alle Tage',
+    chart_organ:'Augen, Nase, Haut', chart_therapy:'Therapie', chart_lung:'Lunge',
+    data_subtitle:'Daten verwalten',
+    csv_title:'CSV-Export', csv_desc:'Exportiere deine Einträge als CSV-Datei für einen bestimmten Zeitraum.', csv_btn:'CSV herunterladen',
+    backup_title:'Backup (JSON)', backup_desc:'Lade alle gespeicherten Daten als JSON-Datei herunter.', backup_btn:'Backup herunterladen',
+    import_title:'Daten importieren', import_desc:'Stelle Daten aus einem JSON-Backup wieder her. Bestehende Einträge für gleiche Tage werden überschrieben.', import_file_btn:'📂 JSON-Datei auswählen',
+    delete_title:'Daten löschen', delete_desc:'Lösche einen einzelnen Eintrag oder alle gespeicherten Daten.',
+    select_day:'— Tag wählen —', delete_btn:'Löschen', delete_all_btn:'Alle Daten löschen',
+    reminder_title_h:'Tägliche Erinnerung', reminder_desc:'Erhalte eine tägliche Benachrichtigung, damit du nicht vergisst, deine Allergiebeschwerden einzutragen.',
+    reminder_enable:'Erinnerung aktivieren', time_label:'Uhrzeit',
+    note_title:'Hinweis', note_desc:'Die Erinnerung funktioniert über Browser-Benachrichtigungen. Dein Browser muss Benachrichtigungen erlauben und die App muss als PWA installiert sein.',
+    pdf_title:'📄 PDF Export', pdf_patient_label:'Patientenname', pdf_patient_ph:'Optional – z.B. Max Mustermann',
+    pdf_email_label:'Email-Adresse', pdf_email_ph:'Optional – z.B. arzt@klinik.ch',
+    pdf_hint:'Falls angegeben, wird eine Teilen-Option angeboten.',
+    cancel:'Abbrechen', pdf_export_btn:'Exportieren', close:'Schliessen',
+    confirm_overwrite:'Eintrag überschreiben?', overwrite_btn:'Überschreiben',
+    info_developed:'Entwickelt von', info_contact:'Kontakt',
+    toast_saved:'✓ Gespeichert', toast_no_yesterday:'Kein Eintrag von gestern', toast_copied:'Vortag übernommen',
+    toast_pdf_ok:'PDF exportiert', toast_pdf_shared:'PDF geteilt', toast_pdf_mail:'PDF heruntergeladen – E-Mail wird geöffnet', toast_pdf_fail:'PDF-Export fehlgeschlagen',
+    toast_deleted:'Eintrag gelöscht', toast_all_deleted:'Alle Daten gelöscht',
+    toast_imported:'Daten importiert', toast_import_fail:'Import fehlgeschlagen',
+    toast_no_data:'Keine Daten vorhanden', toast_no_entries:'Keine Einträge im Zeitraum',
+    toast_csv_ok:'CSV exportiert', toast_backup_ok:'Backup heruntergeladen',
+    toast_select_day:'Bitte Tag wählen', toast_invalid:'Ungültiges Dateiformat',
+    pdf_period:'Zeitraum:', pdf_created:'Erstellt:', pdf_patient_prefix:'Patient/in:',
+    months:['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
+    months_long:['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+    weekdays:['Mo','Di','Mi','Do','Fr','Sa','So'],
+    cal_edit_prefix:'Eintrag für', cal_edit_suffix:'bearbeiten', cal_select:'Datum wählen...',
+    confirm_import:'Daten importieren?', confirm_delete_entry:'Eintrag löschen?', confirm_delete_all:'Alle Daten löschen?',
+    lung_atemnot:'Atemnot', lung_pfeifend:'Pfeifende Atmung', lung_husten:'Husten',
+    toast_csv_from_to:'Bitte Von/Bis wählen', toast_csv_date_order:'Von muss vor Bis liegen',
+    toast_notif_denied:'Benachrichtigungen nicht erlaubt', toast_notif_blocked:'Benachrichtigungen blockiert',
+    reminder_on_prefix:'Erinnerung aktiv: täglich um', reminder_on_suffix:'Uhr', reminder_off:'Erinnerung deaktiviert',
+    notif_reminder:'Vergiss nicht, deine heutigen Allergiebeschwerden einzutragen!',
+    confirm_overwrite_body:'Eintrag existiert bereits. Überschreiben?',
+    confirm_import_body:'Einträge gefunden. Importieren?', confirm_delete_body:'Eintrag löschen?',
+    confirm_delete_all_body:'Einträge löschen? Nicht rückgängig machbar!', days_word:'Tage',
+  },
+  en: {
+    nav_home:'Today', nav_cal:'Calendar', nav_stats:'Statistics', nav_reminder:'Reminder', nav_info:'Info', nav_data:'Data',
+    app_subtitle:'Allergy Diary',
+    copy_yesterday:'Copy from yesterday', auto_copy:'Auto copy',
+    section_symptoms:'Allergy Symptoms', section_therapy:'Therapy',
+    organ_augen:'Eyes', organ_nase:'Nose', organ_lunge:'Lungs', organ_haut:'Skin',
+    sym_beschwerden:'Symptoms', sym_atemnot:'Breathlessness', sym_pfeifend:'Wheezing', sym_husten:'Cough',
+    therapy_hint:'hold for more info',
+    th_antihistaminikum:'Antihistamine', th_augentropfen:'Eye drops', th_nasenspray:'Nasal spray',
+    th_inh_notfall:'Inhaler (as needed)', th_inh_kortison:'Inhaler (maintenance)', th_biologikum:'Biologic',
+    save_btn:'Save entry', saved_toast:'✓ Saved',
+    cal_hint:'Select date to add entry',
+    range_7d:'7 days', range_14d:'14 days', range_30d:'30 days', range_90d:'90 days',
+    range_custom:'Custom range', from:'From', to:'To', all_days:'All days',
+    chart_organ:'Eyes, Nose, Skin', chart_therapy:'Therapy', chart_lung:'Lungs',
+    data_subtitle:'Manage data',
+    csv_title:'CSV Export', csv_desc:'Export your entries as a CSV file for a specific period.', csv_btn:'Download CSV',
+    backup_title:'Backup (JSON)', backup_desc:'Download all saved data as a JSON file.', backup_btn:'Download backup',
+    import_title:'Import data', import_desc:'Restore data from a JSON backup. Existing entries will be overwritten.', import_file_btn:'📂 Select JSON file',
+    delete_title:'Delete data', delete_desc:'Delete a single entry or all saved data.',
+    select_day:'— Select day —', delete_btn:'Delete', delete_all_btn:'Delete all data',
+    reminder_title_h:'Daily reminder', reminder_desc:'Get a daily notification so you don\'t forget to record your allergy symptoms.',
+    reminder_enable:'Enable reminder', time_label:'Time',
+    note_title:'Note', note_desc:'The reminder works via browser notifications. Your browser must allow notifications and the app must be installed as a PWA.',
+    pdf_title:'📄 PDF Export', pdf_patient_label:'Patient name', pdf_patient_ph:'Optional – e.g. John Smith',
+    pdf_email_label:'Email address', pdf_email_ph:'Optional – e.g. doctor@clinic.com',
+    pdf_hint:'If provided, a sharing option will be offered.',
+    cancel:'Cancel', pdf_export_btn:'Export', close:'Close',
+    confirm_overwrite:'Overwrite entry?', overwrite_btn:'Overwrite',
+    info_developed:'Developed by', info_contact:'Contact',
+    toast_saved:'✓ Saved', toast_no_yesterday:'No entry from yesterday', toast_copied:'Yesterday copied',
+    toast_pdf_ok:'PDF exported', toast_pdf_shared:'PDF shared', toast_pdf_mail:'PDF downloaded – opening email', toast_pdf_fail:'PDF export failed',
+    toast_deleted:'Entry deleted', toast_all_deleted:'All data deleted',
+    toast_imported:'Data imported', toast_import_fail:'Import failed',
+    toast_no_data:'No data available', toast_no_entries:'No entries in period',
+    toast_csv_ok:'CSV exported', toast_backup_ok:'Backup downloaded',
+    toast_select_day:'Please select a day', toast_invalid:'Invalid file format',
+    pdf_period:'Period:', pdf_created:'Created:', pdf_patient_prefix:'Patient:',
+    months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    months_long:['January','February','March','April','May','June','July','August','September','October','November','December'],
+    weekdays:['Mo','Tu','We','Th','Fr','Sa','Su'],
+    cal_edit_prefix:'Edit entry for', cal_edit_suffix:'', cal_select:'Select date...',
+    confirm_import:'Import data?', confirm_delete_entry:'Delete entry?', confirm_delete_all:'Delete all data?',
+    lung_atemnot:'Breathlessness', lung_pfeifend:'Wheezing', lung_husten:'Cough',
+    toast_csv_from_to:'Please select From/To', toast_csv_date_order:'"From" must be before "To"',
+    toast_notif_denied:'Notifications not allowed', toast_notif_blocked:'Notifications blocked',
+    reminder_on_prefix:'Reminder active: daily at', reminder_on_suffix:'', reminder_off:'Reminder disabled',
+    notif_reminder:"Don't forget to record your allergy symptoms today!",
+    confirm_overwrite_body:'Entry already exists. Overwrite?',
+    confirm_import_body:'entries found. Import?', confirm_delete_body:'Delete this entry?',
+    confirm_delete_all_body:'Delete all entries? This cannot be undone!', days_word:'days',
+  },
+  sq: {
+    nav_home:'Sot', nav_cal:'Kalendar', nav_stats:'Statistika', nav_reminder:'Kujtim', nav_info:'Info', nav_data:'Të dhëna',
+    app_subtitle:'Ditar i Alergjisë',
+    copy_yesterday:'Kopjo nga dje', auto_copy:'Kopjo automatikisht',
+    section_symptoms:'Simptomat e Alergjisë', section_therapy:'Terapi',
+    organ_augen:'Sytë', organ_nase:'Hunda', organ_lunge:'Mushkëritë', organ_haut:'Lëkura',
+    sym_beschwerden:'Simptoma', sym_atemnot:'Vështirësi frymëmarrjeje', sym_pfeifend:'Frymëmarrje me fishkëllimë', sym_husten:'Kollë',
+    therapy_hint:'mbani shtypur për informacion',
+    th_antihistaminikum:'Antihistaminik', th_augentropfen:'Pika sy', th_nasenspray:'Sprej nazal',
+    th_inh_notfall:'Inhalator (sipas nevojës)', th_inh_kortison:'Inhalator (terapi e vazhd.)', th_biologikum:'Biologjik',
+    save_btn:'Ruaj hyrjen', saved_toast:'✓ Ruajtur',
+    cal_hint:'Zgjidhni datën për të shtuar',
+    range_7d:'7 ditë', range_14d:'14 ditë', range_30d:'30 ditë', range_90d:'90 ditë',
+    range_custom:'Interval i personalizuar', from:'Nga', to:'Deri', all_days:'Të gjitha ditët',
+    chart_organ:'Sytë, Hunda, Lëkura', chart_therapy:'Terapi', chart_lung:'Mushkëritë',
+    data_subtitle:'Menaxho të dhënat',
+    csv_title:'Eksport CSV', csv_desc:'Eksporto hyrjet tuaja si skedar CSV.', csv_btn:'Shkarko CSV',
+    backup_title:'Rezervë (JSON)', backup_desc:'Shkarko të gjitha të dhënat si skedar JSON.', backup_btn:'Shkarko rezervën',
+    import_title:'Importo të dhënat', import_desc:'Rivendos të dhënat nga rezerva JSON. Hyrjet ekzistuese do të mbishkruhen.', import_file_btn:'📂 Zgjidh skedarin JSON',
+    delete_title:'Fshi të dhënat', delete_desc:'Fshi një hyrje të vetme ose të gjitha të dhënat.',
+    select_day:'— Zgjidh ditën —', delete_btn:'Fshi', delete_all_btn:'Fshi të gjitha të dhënat',
+    reminder_title_h:'Kujtim i përditshëm', reminder_desc:'Merr njoftim të përditshëm që të mos harrosh të regjistrosh simptomat.',
+    reminder_enable:'Aktivizo kujtimin', time_label:'Ora',
+    note_title:'Shënim', note_desc:'Kujtimi funksionon përmes njoftimeve të shfletuesit. Shfletuesi duhet të lejojë njoftimet dhe aplikacioni të instalohet si PWA.',
+    pdf_title:'📄 Eksport PDF', pdf_patient_label:'Emri i pacientit', pdf_patient_ph:'Opsionale – p.sh. Arben Krasniqi',
+    pdf_email_label:'Adresa email', pdf_email_ph:'Opsionale – p.sh. mjek@klinika.al',
+    pdf_hint:'Nëse jepet, ofrohet mundësia e ndarjes.',
+    cancel:'Anulo', pdf_export_btn:'Eksporto', close:'Mbyll',
+    confirm_overwrite:'Mbishkruaj hyrjen?', overwrite_btn:'Mbishkruaj',
+    info_developed:'Zhvilluar nga', info_contact:'Kontakt',
+    toast_saved:'✓ Ruajtur', toast_no_yesterday:'Asnjë hyrje nga dje', toast_copied:'Dje u kopjua',
+    toast_pdf_ok:'PDF eksportuar', toast_pdf_shared:'PDF ndarë', toast_pdf_mail:'PDF shkarkuar – po hapet emaili', toast_pdf_fail:'Eksportimi i PDF dështoi',
+    toast_deleted:'Hyrja u fshi', toast_all_deleted:'Të gjitha të dhënat u fshin',
+    toast_imported:'Të dhënat u importuan', toast_import_fail:'Importimi dështoi',
+    toast_no_data:'Nuk ka të dhëna', toast_no_entries:'Nuk ka hyrje në periudhë',
+    toast_csv_ok:'CSV eksportuar', toast_backup_ok:'Rezerva u shkarkua',
+    toast_select_day:'Zgjidhni një ditë', toast_invalid:'Format skedari i pavlefshëm',
+    pdf_period:'Periudha:', pdf_created:'Krijuar:', pdf_patient_prefix:'Pacienti:',
+    months:['Jan','Shk','Mar','Pri','Maj','Qer','Kor','Gus','Sht','Tet','Nën','Dhj'],
+    months_long:['Janar','Shkurt','Mars','Prill','Maj','Qershor','Korrik','Gusht','Shtator','Tetor','Nëntor','Dhjetor'],
+    weekdays:['Hë','Ma','Më','En','Pr','Sh','Di'],
+    cal_edit_prefix:'Ndrysho hyrjen për', cal_edit_suffix:'', cal_select:'Zgjidh datën...',
+    confirm_import:'Importo të dhënat?', confirm_delete_entry:'Fshi hyrjen?', confirm_delete_all:'Fshi të gjitha të dhënat?',
+    lung_atemnot:'Vështirësi frymëmarrjeje', lung_pfeifend:'Frymëmarrje me fishkëllimë', lung_husten:'Kollë',
+    toast_csv_from_to:'Zgjidhni Nga/Deri', toast_csv_date_order:'"Nga" duhet të jetë para "Deri"',
+    toast_notif_denied:'Njoftimet nuk lejohen', toast_notif_blocked:'Njoftimet janë bllokuar',
+    reminder_on_prefix:'Kujtimi aktiv: çdo ditë në orën', reminder_on_suffix:'', reminder_off:'Kujtimi çaktivizuar',
+    notif_reminder:'Mos harroni të regjistroni simptomat e alergjisë sot!',
+    confirm_overwrite_body:'Hyrja ekziston. Mbishkruaj?',
+    confirm_import_body:'hyrje u gjetën. Importo?', confirm_delete_body:'Fshi këtë hyrje?',
+    confirm_delete_all_body:'Fshi të gjitha? Nuk mund të zhbëhet!', days_word:'ditë',
+  },
+  ta: {
+    nav_home:'இன்று', nav_cal:'நாட்காட்டி', nav_stats:'புள்ளியியல்', nav_reminder:'நினைவூட்டல்', nav_info:'தகவல்', nav_data:'தரவு',
+    app_subtitle:'ஒவ்வாமை நாட்குறிப்பு',
+    copy_yesterday:'நேற்றிலிருந்து நகல்', auto_copy:'தானியங்கி நகல்',
+    section_symptoms:'ஒவ்வாமை அறிகுறிகள்', section_therapy:'சிகிச்சை',
+    organ_augen:'கண்கள்', organ_nase:'மூக்கு', organ_lunge:'நுரையீரல்', organ_haut:'தோல்',
+    sym_beschwerden:'அறிகுறிகள்', sym_atemnot:'மூச்சுத்திணறல்', sym_pfeifend:'மூச்சு சீழ்க்கை', sym_husten:'இருமல்',
+    therapy_hint:'அதிக தகவலுக்கு அழுத்திப் பிடி',
+    th_antihistaminikum:'எதிர்வினையாற்றி', th_augentropfen:'கண் சொட்டு மருந்து', th_nasenspray:'மூக்கு ஸ்ப்ரே',
+    th_inh_notfall:'இன்ஹேலர் (தேவை/அவசரம்)', th_inh_kortison:'இன்ஹேலர் (நிரந்தரம்)', th_biologikum:'உயிரியல் மருந்து',
+    save_btn:'பதிவை சேமி', saved_toast:'✓ சேமிக்கப்பட்டது',
+    cal_hint:'தேதி தேர்ந்தெடுக்கவும்',
+    range_7d:'7 நாட்கள்', range_14d:'14 நாட்கள்', range_30d:'30 நாட்கள்', range_90d:'90 நாட்கள்',
+    range_custom:'தனிப்பயன் வரம்பு', from:'இல் இருந்து', to:'வரை', all_days:'அனைத்து நாட்களும்',
+    chart_organ:'கண்கள், மூக்கு, தோல்', chart_therapy:'சிகிச்சை', chart_lung:'நுரையீரல்',
+    data_subtitle:'தரவை நிர்வகி',
+    csv_title:'CSV ஏற்றுமதி', csv_desc:'உங்கள் பதிவுகளை CSV கோப்பாக ஏற்றுமதி செய்யுங்கள்.', csv_btn:'CSV பதிவிறக்கம்',
+    backup_title:'காப்பு (JSON)', backup_desc:'அனைத்து தரவையும் JSON கோப்பாக பதிவிறக்கவும்.', backup_btn:'காப்பு பதிவிறக்கம்',
+    import_title:'தரவை இறக்குமதி', import_desc:'JSON காப்பிலிருந்து தரவை மீட்டமையுங்கள். ஏற்கனவே உள்ள பதிவுகள் மேலெழுதப்படும்.', import_file_btn:'📂 JSON கோப்பை தேர்ந்தெடு',
+    delete_title:'தரவை நீக்கு', delete_desc:'ஒரு பதிவை அல்லது அனைத்து தரவையும் நீக்கவும்.',
+    select_day:'— நாளை தேர்ந்தெடு —', delete_btn:'நீக்கு', delete_all_btn:'அனைத்தையும் நீக்கு',
+    reminder_title_h:'தினசரி நினைவூட்டல்', reminder_desc:'உங்கள் அறிகுறிகளை பதிவு செய்ய மறக்காமல் இருக்க தினசரி அறிவிப்பு பெறுங்கள்.',
+    reminder_enable:'நினைவூட்டலை இயக்கு', time_label:'நேரம்',
+    note_title:'குறிப்பு', note_desc:'நினைவூட்டல் உலாவி அறிவிப்புகள் மூலம் செயல்படுகிறது. PWA ஆக நிறுவினால் நம்பகமாக வேலை செய்யும்.',
+    pdf_title:'📄 PDF ஏற்றுமதி', pdf_patient_label:'நோயாளி பெயர்', pdf_patient_ph:'விருப்பத்திற்குரியது',
+    pdf_email_label:'மின்னஞ்சல்', pdf_email_ph:'விருப்பத்திற்குரியது',
+    pdf_hint:'வழங்கினால் பகிர்வு விருப்பம் கிடைக்கும்.',
+    cancel:'ரத்து செய்', pdf_export_btn:'ஏற்றுமதி', close:'மூடு',
+    confirm_overwrite:'பதிவை மேலெழுதவா?', overwrite_btn:'மேலெழுது',
+    info_developed:'உருவாக்கியவர்', info_contact:'தொடர்பு',
+    toast_saved:'✓ சேமிக்கப்பட்டது', toast_no_yesterday:'நேற்று பதிவு இல்லை', toast_copied:'நேற்று நகலெடுக்கப்பட்டது',
+    toast_pdf_ok:'PDF ஏற்றுமதி செய்யப்பட்டது', toast_pdf_shared:'PDF பகிரப்பட்டது', toast_pdf_mail:'PDF பதிவிறக்கம் – மின்னஞ்சல் திறக்கிறது', toast_pdf_fail:'PDF ஏற்றுமதி தோல்வியடைந்தது',
+    toast_deleted:'பதிவு நீக்கப்பட்டது', toast_all_deleted:'அனைத்து தரவும் நீக்கப்பட்டது',
+    toast_imported:'தரவு இறக்குமதி செய்யப்பட்டது', toast_import_fail:'இறக்குமதி தோல்வி',
+    toast_no_data:'தரவு இல்லை', toast_no_entries:'காலத்தில் பதிவுகள் இல்லை',
+    toast_csv_ok:'CSV ஏற்றுமதி செய்யப்பட்டது', toast_backup_ok:'காப்பு பதிவிறக்கப்பட்டது',
+    toast_select_day:'நாளை தேர்ந்தெடுக்கவும்', toast_invalid:'தவறான கோப்பு வடிவம்',
+    pdf_period:'காலம்:', pdf_created:'உருவாக்கப்பட்டது:', pdf_patient_prefix:'நோயாளி:',
+    months:['ஜன','பிப','மார்','ஏப்','மே','ஜூன்','ஜூல்','ஆக','செப்','அக்','நவ','டிச'],
+    months_long:['ஜனவரி','பிப்ரவரி','மார்ச்','ஏப்ரல்','மே','ஜூன்','ஜூலை','ஆகஸ்ட்','செப்டம்பர்','அக்டோபர்','நவம்பர்','டிசம்பர்'],
+    weekdays:['தி','செ','பு','வி','வெ','ச','ஞா'],
+    cal_edit_prefix:'பதிவு திருத்து:', cal_edit_suffix:'', cal_select:'தேதி தேர்ந்தெடு...',
+    confirm_import:'தரவை இறக்குமதி செய்யவா?', confirm_delete_entry:'பதிவை நீக்கவா?', confirm_delete_all:'அனைத்தையும் நீக்கவா?',
+    lung_atemnot:'மூச்சுத்திணறல்', lung_pfeifend:'மூச்சு சீழ்க்கை', lung_husten:'இருமல்',
+    toast_csv_from_to:'தொடக்கம்/முடிவு தேர்ந்தெடுக்கவும்', toast_csv_date_order:'தொடக்கம் முடிவிற்கு முன் வர வேண்டும்',
+    toast_notif_denied:'அறிவிப்புகள் அனுமதிக்கப்படவில்லை', toast_notif_blocked:'அறிவிப்புகள் தடுக்கப்பட்டன',
+    reminder_on_prefix:'நினைவூட்டல் செயலில்:', reminder_on_suffix:'', reminder_off:'நினைவூட்டல் முடக்கப்பட்டது',
+    notif_reminder:'இன்றைய ஒவ்வாமை அறிகுறிகளை பதிவு செய்ய மறவாதீர்கள்!',
+    confirm_overwrite_body:'பதிவு ஏற்கனவே உள்ளது. மேலெழுதவா?',
+    confirm_import_body:'பதிவுகள் கிடைத்தன. இறக்குமதி செய்யவா?', confirm_delete_body:'பதிவை நீக்கவா?',
+    confirm_delete_all_body:'அனைத்தையும் நீக்கவா? மீட்க முடியாது!', days_word:'நாட்கள்',
+  },
+  es: {
+    nav_home:'Hoy', nav_cal:'Calendario', nav_stats:'Estadísticas', nav_reminder:'Recordatorio', nav_info:'Info', nav_data:'Datos',
+    app_subtitle:'Diario de Alergias',
+    copy_yesterday:'Copiar del día anterior', auto_copy:'Copiar automáticamente',
+    section_symptoms:'Síntomas de Alergia', section_therapy:'Terapia',
+    organ_augen:'Ojos', organ_nase:'Nariz', organ_lunge:'Pulmones', organ_haut:'Piel',
+    sym_beschwerden:'Síntomas', sym_atemnot:'Dificultad respiratoria', sym_pfeifend:'Sibilancias', sym_husten:'Tos',
+    therapy_hint:'mantener presionado para más info',
+    th_antihistaminikum:'Antihistamínico', th_augentropfen:'Gotas oculares', th_nasenspray:'Spray nasal',
+    th_inh_notfall:'Inhalador (según necesidad)', th_inh_kortison:'Inhalador (tratamiento cont.)', th_biologikum:'Biológico',
+    save_btn:'Guardar entrada', saved_toast:'✓ Guardado',
+    cal_hint:'Seleccionar fecha para agregar',
+    range_7d:'7 días', range_14d:'14 días', range_30d:'30 días', range_90d:'90 días',
+    range_custom:'Rango personalizado', from:'Desde', to:'Hasta', all_days:'Todos los días',
+    chart_organ:'Ojos, Nariz, Piel', chart_therapy:'Terapia', chart_lung:'Pulmones',
+    data_subtitle:'Gestionar datos',
+    csv_title:'Exportar CSV', csv_desc:'Exporta tus entradas como archivo CSV para un período específico.', csv_btn:'Descargar CSV',
+    backup_title:'Copia de seguridad (JSON)', backup_desc:'Descarga todos los datos guardados como archivo JSON.', backup_btn:'Descargar copia',
+    import_title:'Importar datos', import_desc:'Restaura datos desde copia JSON. Las entradas existentes se sobrescribirán.', import_file_btn:'📂 Seleccionar archivo JSON',
+    delete_title:'Eliminar datos', delete_desc:'Elimina una entrada o todos los datos guardados.',
+    select_day:'— Seleccionar día —', delete_btn:'Eliminar', delete_all_btn:'Eliminar todos los datos',
+    reminder_title_h:'Recordatorio diario', reminder_desc:'Recibe una notificación diaria para no olvidar registrar tus síntomas.',
+    reminder_enable:'Activar recordatorio', time_label:'Hora',
+    note_title:'Nota', note_desc:'El recordatorio funciona mediante notificaciones del navegador. El navegador debe permitir notificaciones y la app debe instalarse como PWA.',
+    pdf_title:'📄 Exportar PDF', pdf_patient_label:'Nombre del paciente', pdf_patient_ph:'Opcional – p.ej. María García',
+    pdf_email_label:'Dirección de email', pdf_email_ph:'Opcional – p.ej. medico@clinica.es',
+    pdf_hint:'Si se indica, se ofrecerá una opción de compartir.',
+    cancel:'Cancelar', pdf_export_btn:'Exportar', close:'Cerrar',
+    confirm_overwrite:'¿Sobrescribir entrada?', overwrite_btn:'Sobrescribir',
+    info_developed:'Desarrollado por', info_contact:'Contacto',
+    toast_saved:'✓ Guardado', toast_no_yesterday:'Sin entrada de ayer', toast_copied:'Ayer copiado',
+    toast_pdf_ok:'PDF exportado', toast_pdf_shared:'PDF compartido', toast_pdf_mail:'PDF descargado – abriendo email', toast_pdf_fail:'Error en exportación PDF',
+    toast_deleted:'Entrada eliminada', toast_all_deleted:'Todos los datos eliminados',
+    toast_imported:'Datos importados', toast_import_fail:'Error en importación',
+    toast_no_data:'No hay datos', toast_no_entries:'Sin entradas en el período',
+    toast_csv_ok:'CSV exportado', toast_backup_ok:'Copia descargada',
+    toast_select_day:'Selecciona un día', toast_invalid:'Formato de archivo no válido',
+    pdf_period:'Período:', pdf_created:'Creado:', pdf_patient_prefix:'Paciente:',
+    months:['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+    months_long:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+    weekdays:['Lu','Ma','Mi','Ju','Vi','Sá','Do'],
+    cal_edit_prefix:'Editar entrada del', cal_edit_suffix:'', cal_select:'Seleccionar fecha...',
+    confirm_import:'¿Importar datos?', confirm_delete_entry:'¿Eliminar entrada?', confirm_delete_all:'¿Eliminar todos los datos?',
+    lung_atemnot:'Dificultad respiratoria', lung_pfeifend:'Sibilancias', lung_husten:'Tos',
+    toast_csv_from_to:'Seleccione Desde/Hasta', toast_csv_date_order:'"Desde" debe ser anterior a "Hasta"',
+    toast_notif_denied:'Notificaciones no permitidas', toast_notif_blocked:'Notificaciones bloqueadas',
+    reminder_on_prefix:'Recordatorio activo: diariamente a las', reminder_on_suffix:'', reminder_off:'Recordatorio desactivado',
+    notif_reminder:'¡No olvides registrar tus síntomas de alergia de hoy!',
+    confirm_overwrite_body:'La entrada ya existe. ¿Sobrescribir?',
+    confirm_import_body:'entradas encontradas. ¿Importar?', confirm_delete_body:'¿Eliminar esta entrada?',
+    confirm_delete_all_body:'¿Eliminar todo? ¡No se puede deshacer!', days_word:'días',
+  }
+};
+
+let currentLang = localStorage.getItem('youkidoc_lang') || 'de';
+
+function t(key) {
+  return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key] !== undefined)
+    ? TRANSLATIONS[currentLang][key]
+    : (TRANSLATIONS.de[key] !== undefined ? TRANSLATIONS.de[key] : key);
+}
+
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('youkidoc_lang', lang);
+  document.documentElement.lang = lang;
+
+  // Update all data-i18n text elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+  // Mark active lang button
+  document.querySelectorAll('.lang-opt').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  // Update ORGAN_LABELS and LUNG_SYMPTOMS for chart legend/tooltips
+  ORGAN_LABELS.augen = t('organ_augen');
+  ORGAN_LABELS.nase  = t('organ_nase');
+  ORGAN_LABELS.haut  = t('organ_haut');
+  LUNG_SYMPTOMS[0].label = t('lung_atemnot');
+  LUNG_SYMPTOMS[1].label = t('lung_pfeifend');
+  LUNG_SYMPTOMS[2].label = t('lung_husten');
+  // Update THERAPY_LIST labels (for legend/PDF)
+  const thMap = {
+    antihistaminikum: 'th_antihistaminikum', augentropfen: 'th_augentropfen', nasenspray: 'th_nasenspray',
+    inhalation_notfall: 'th_inh_notfall', inhalation_kortison: 'th_inh_kortison', biologikum: 'th_biologikum'
+  };
+  THERAPY_LIST.forEach(th => { if (thMap[th.key]) th.label = t(thMap[th.key]); });
+
+  // Re-render dynamic screens
+  if (document.getElementById('screen-stats').classList.contains('active')) renderStats();
+  if (document.getElementById('screen-cal').classList.contains('active')) renderCalendar();
+  // Update zoom-label default text
+  const zl = document.getElementById('zoom-label');
+  if (zl && zl.textContent.trim() === '' || zl.dataset.allDays) zl.textContent = t('all_days');
+  // Update the saved-toast default text
+  const st = document.getElementById('saved-toast');
+  if (st && !st.classList.contains('show')) st.textContent = t('saved_toast');
+}
+
+// ── End i18n ──────────────────────────────────────────────────────────────────
 const DB_KEY = 'youkidoc_v1';
 let currentEditDate = null;
 let statsRange = 30;
@@ -1089,8 +1433,8 @@ document.getElementById('save-btn').addEventListener('click', async function() {
   const db = loadData();
   if (db[date]) {
     const ok = await showConfirm(
-      'Eintrag überschreiben?',
-      `Für den ${formatDateDE(date)} existiert bereits ein Eintrag. Möchtest du ihn überschreiben?`
+      t('confirm_overwrite'),
+      `${formatDateDE(date)}: ${t('confirm_overwrite_body')}`
     );
     if (!ok) return;
   }
@@ -1125,8 +1469,8 @@ function showScreen(name) {
 function renderCalendar() {
   const db = loadData();
   const today = todayStr();
-  const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
-  const days = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const months = t('months_long');
+  const days = t('weekdays');
   const year = calDisplayYear; const month = calDisplayMonth;
   const firstDay = new Date(year, month, 1).getDay();
   const offset = (firstDay === 0) ? 6 : firstDay - 1;
@@ -1149,8 +1493,9 @@ function renderCalendar() {
     html += `<div class="${cls}" onclick="selectCalDay('${dateStr}')">${i}</div>`;
   }
   html += `</div>`;
+  const editSuffix = t('cal_edit_suffix') ? ' ' + t('cal_edit_suffix') : '';
   html += `<button class="cal-edit-btn" id="cal-edit-btn" ${calSelected ? '' : 'disabled'} onclick="goEditDate()">
-    ${calSelected ? 'Eintrag für ' + formatDateDE(calSelected) + ' bearbeiten' : 'Datum wählen...'}
+    ${calSelected ? t('cal_edit_prefix') + ' ' + formatDateDE(calSelected) + editSuffix : t('cal_select')}
   </button>`;
   document.getElementById('cal-container').innerHTML = html;
 }
@@ -1257,7 +1602,7 @@ const THERAPY_INFO = {
   nasenspray: 'z.B. Avamys\u2122, Nasonex\u2122 etc., <a href="https://compendium.ch/register/atc/R01AD" target="_blank" rel="noopener">komplette Liste</a>.',
   inhalation_notfall: 'Ventolin\u2122, Bricanyl\u2122, Salamol\u2122, Salbu Orion\u2122, Symbicort\u2122',
   inhalation_kortison: 'Axotide\u2122, Seretide\u2122, Symbicort\u2122, Vannair\u2122, Relvar\u2122, Spiriva\u2122, Flutiform\u2122',
-  biologikum: 'Omalizumab\u2122, Dupixent\u2122, Nucala\u2122'
+  biologikum: 'Omalizumab\u2122, Dupixent\u2122, Nucala\u2122... <a href="https://compendium.ch/register/atc/R03DX">Komplette Liste</a>.'
 };
 let chartLung = null;
 const THERAPY_GROUP1_ORDER = ['nasenspray','augentropfen','antihistaminikum'];
@@ -1372,7 +1717,7 @@ function renderStats() {
 
   const end = zoomEnd || allDates.length;
   const dates = allDates.slice(zoomStart, end);
-  const MONAT_NAMEN = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  const MONAT_NAMEN = t('months');
   const labels = dates.map(d => { const [y,m,day]=d.split('-'); return `${day}.${m}`; });
   let lastYear = '';
   const monthLabels = dates.map(d => {
@@ -1394,9 +1739,9 @@ function renderStats() {
 
   const zl = document.getElementById('zoom-label');
   if (zoomEnd && (zoomEnd - zoomStart < allDates.length)) {
-    zl.textContent = `${labels[0]} – ${labels[labels.length-1]} (${numDates} Tage)`;
+    zl.textContent = `${labels[0]} – ${labels[labels.length-1]} (${numDates} ${t('days_word')})`;
   } else {
-    zl.textContent = `Alle ${allDates.length} Tage`;
+    zl.textContent = `${t('all_days')} (${allDates.length})`;
   }
 
   // Dark mode
@@ -1437,7 +1782,7 @@ function renderStats() {
             db[d] && db[d].therapies && db[d].therapies[t.key] ? { x: di, y: ti } : null
           ).filter(Boolean),
           backgroundColor: t.color, borderColor: t.color,
-          pointStyle: 'rectRounded', pointRadius: 6, pointHoverRadius: 8, showLine: false
+          pointStyle: 'rectRounded', pointRadius: 3, pointHoverRadius: 5, showLine: false
         }))
       },
       options: {
@@ -1548,7 +1893,7 @@ function renderStats() {
           db[d] && db[d].therapies && db[d].therapies[t.key] ? { x: di, y: ti } : null
         ).filter(Boolean),
         backgroundColor: t.color, borderColor: t.color,
-        pointStyle: 'rectRounded', pointRadius: 6, pointHoverRadius: 8, showLine: false
+        pointStyle: 'rectRounded', pointRadius: 3, pointHoverRadius: 5, showLine: false
       }))
     },
     options: {
@@ -1655,16 +2000,16 @@ async function doExportPDF() {
     pdf.setFontSize(10); pdf.setTextColor(70); pdf.setFont(undefined, 'normal');
     if (patientName) {
       y += 5.5; pdf.setFontSize(11); pdf.setFont(undefined, 'bold');
-      pdf.text(`Patient/in: ${patientName}`, MX, y);
+      pdf.text(`${t('pdf_patient_prefix')} ${patientName}`, MX, y);
       pdf.setFont(undefined, 'normal'); pdf.setFontSize(10);
     }
     const allDates = getActiveDates();
     const visDates = allDates.slice(zoomStart, zoomEnd || allDates.length);
     if (visDates.length) {
-      y += 5; pdf.text(`Zeitraum: ${formatDateDE(visDates[0])} – ${formatDateDE(visDates[visDates.length-1])}`, MX, y);
+      y += 5; pdf.text(`${t('pdf_period')} ${formatDateDE(visDates[0])} – ${formatDateDE(visDates[visDates.length-1])}`, MX, y);
     }
     y += 4.5; pdf.setTextColor(130); pdf.setFontSize(9);
-    pdf.text(`Erstellt: ${formatDateDE(todayStr())}`, MX, y);
+    pdf.text(`${t('pdf_created')} ${formatDateDE(todayStr())}`, MX, y);
     y += 3; pdf.setDrawColor(200,200,200); pdf.line(MX, y, PW - MX, y);
     y += 4;
 
@@ -1685,10 +2030,10 @@ async function doExportPDF() {
     }
 
     const charts = [
-      { img: imgSym,  label: 'Augen, Nase, Haut', h: CH.sym  },
-      { img: imgTh1,  label: 'Therapie',           h: CH.th1  },
-      { img: imgLung, label: 'Lunge',               h: CH.lung },
-      { img: imgTh2,  label: 'Therapie',            h: CH.th2  },
+      { img: imgSym,  label: t('chart_organ'),   h: CH.sym  },
+      { img: imgTh1,  label: t('chart_therapy'), h: CH.th1  },
+      { img: imgLung, label: t('chart_lung'),    h: CH.lung },
+      { img: imgTh2,  label: t('chart_therapy'), h: CH.th2  },
     ];
     for (const c of charts) {
       vLabel(c.label, y, c.h);
@@ -1729,24 +2074,24 @@ async function doExportPDF() {
           title: 'Youkidoc Beschwerdetagebuch',
           text: `Beschwerdetagebuch${patientName ? ' – ' + patientName : ''}`
         });
-        showToast('PDF geteilt');
+        showToast(t('toast_pdf_shared'));
       } else {
         pdf.save(filename);
         const subject = encodeURIComponent(`Beschwerdetagebuch${patientName ? ' – ' + patientName : ''}`);
         const body    = encodeURIComponent(`Guten Tag,\n\nim Anhang finden Sie den Beschwerdetagebuch-Report${patientName ? ' von ' + patientName : ''}.\n\nMit freundlichen Grüssen`);
         setTimeout(() => { window.location.href = `mailto:${emailAddr}?subject=${subject}&body=${body}`; }, 800);
-        showToast('PDF heruntergeladen – E-Mail wird geöffnet');
+        showToast(t('toast_pdf_mail'));
       }
     } else {
       pdf.save(filename);
-      showToast('PDF exportiert');
+      showToast(t('toast_pdf_ok'));
     }
 
   } catch (err) {
     console.error('PDF Export Fehler:', err);
     pdfExportMode = false;
     renderStats();
-    showToast('PDF-Export fehlgeschlagen');
+    showToast(t('toast_pdf_fail'));
   }
   btn.textContent = 'PDF';
   btn.style.pointerEvents = '';
@@ -1766,15 +2111,15 @@ function showToast(msg) {
   const toast = document.getElementById('saved-toast');
   toast.textContent = msg;
   toast.classList.add('show');
-  setTimeout(() => { toast.classList.remove('show'); toast.textContent = '✓ Gespeichert'; }, 2200);
+  setTimeout(() => { toast.classList.remove('show'); toast.textContent = t('toast_saved'); }, 2200);
 }
 
 // CSV Export
 function exportCSV() {
   const from = document.getElementById('csv-from').value;
   const to = document.getElementById('csv-to').value;
-  if (!from || !to) { showToast('Bitte Von/Bis wählen'); return; }
-  if (from > to) { showToast('Von muss vor Bis liegen'); return; }
+  if (!from || !to) { showToast(t('toast_csv_from_to')); return; }
+  if (from > to) { showToast(t('toast_csv_date_order')); return; }
 
   const db = loadData();
   const dates = getCustomDateRange(from, to);
@@ -1803,19 +2148,19 @@ function exportCSV() {
     rows.push(row.join(';'));
   });
 
-  if (rows.length === 1) { showToast('Keine Einträge im Zeitraum'); return; }
+  if (rows.length === 1) { showToast(t('toast_no_entries')); return; }
   downloadFile(rows.join('\n'), `youkidoc_export_${from}_${to}.csv`, 'text/csv;charset=utf-8');
-  showToast('CSV exportiert');
+  showToast(t('toast_csv_ok'));
 }
 
 // JSON Backup
 function exportJSON() {
   const db = loadData();
   const keys = Object.keys(db);
-  if (!keys.length) { showToast('Keine Daten vorhanden'); return; }
+  if (!keys.length) { showToast(t('toast_no_data')); return; }
   const backup = { app: 'youkidoc_allergie', version: 1, exported: new Date().toISOString(), data: db };
   downloadFile(JSON.stringify(backup, null, 2), `youkidoc_backup_${todayStr()}.json`, 'application/json');
-  showToast('Backup heruntergeladen');
+  showToast(t('toast_backup_ok'));
 }
 
 // JSON Import
@@ -1835,24 +2180,24 @@ function importJSON(input) {
         importData = parsed;
       }
 
-      if (!importData) { showToast('Ungültiges Dateiformat'); return; }
+      if (!importData) { showToast(t('toast_invalid')); return; }
 
       const entries = Object.keys(importData).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k));
-      if (!entries.length) { showToast('Keine gültigen Einträge'); return; }
+      if (!entries.length) { showToast(t('toast_no_entries')); return; }
 
       const ok = await showConfirm(
-        'Daten importieren?',
-        `${entries.length} Einträge gefunden (${formatDateDE(entries.sort()[0])} – ${formatDateDE(entries.sort()[entries.length-1])}). Bestehende Einträge für gleiche Tage werden überschrieben.`
+        t('confirm_import'),
+        `${entries.length} ${t('confirm_import_body')}`
       );
       if (!ok) { input.value = ''; return; }
 
       const db = loadData();
       entries.forEach(k => { db[k] = importData[k]; });
       saveData(db);
-      showToast(`${entries.length} Einträge importiert`);
+      showToast(`${entries.length} ${t('toast_imported')}`);
       populateDeleteSelect();
     } catch (err) {
-      showToast('Fehler: Datei nicht lesbar');
+      showToast(t('toast_import_fail'));
     }
     input.value = '';
   };
@@ -1863,18 +2208,18 @@ function importJSON(input) {
 async function deleteSelected() {
   const sel = document.getElementById('delete-select');
   const dateStr = sel.value;
-  if (!dateStr) { showToast('Bitte Tag wählen'); return; }
+  if (!dateStr) { showToast(t('toast_select_day')); return; }
 
   const ok = await showConfirm(
-    'Eintrag löschen?',
-    `Möchtest du den Eintrag vom ${formatDateDE(dateStr)} unwiderruflich löschen?`
+    t('confirm_delete_entry'),
+    `${formatDateDE(dateStr)}: ${t('confirm_delete_body')}`
   );
   if (!ok) return;
 
   const db = loadData();
   delete db[dateStr];
   saveData(db);
-  showToast('Eintrag gelöscht');
+  showToast(t('toast_deleted'));
   populateDeleteSelect();
 }
 
@@ -1882,16 +2227,16 @@ async function deleteSelected() {
 async function deleteAll() {
   const db = loadData();
   const count = Object.keys(db).length;
-  if (!count) { showToast('Keine Daten vorhanden'); return; }
+  if (!count) { showToast(t('toast_no_data')); return; }
 
   const ok = await showConfirm(
-    'Alle Daten löschen?',
-    `Möchtest du wirklich alle ${count} Einträge unwiderruflich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`
+    t('confirm_delete_all'),
+    `${count} ${t('confirm_delete_all_body')}`
   );
   if (!ok) return;
 
   saveData({});
-  showToast('Alle Daten gelöscht');
+  showToast(t('toast_all_deleted'));
   populateDeleteSelect();
   loadFormData(null);
 }
@@ -1901,7 +2246,7 @@ function populateDeleteSelect() {
   const db = loadData();
   const sel = document.getElementById('delete-select');
   const dates = Object.keys(db).sort().reverse();
-  sel.innerHTML = '<option value="">— Tag wählen —</option>';
+  sel.innerHTML = `<option value="">${t('select_day')}</option>`;
   dates.forEach(d => {
     const opt = document.createElement('option');
     opt.value = d;
@@ -1918,9 +2263,9 @@ function copyFromYesterday() {
   d.setDate(d.getDate() - 1);
   const yesterdayStr = d.toISOString().split('T')[0];
   const entry = db[yesterdayStr];
-  if (!entry) { showToast('Keine Daten vom Vortag'); return; }
+  if (!entry) { showToast(t('toast_no_yesterday')); return; }
   loadFormData(entry);
-  showToast('Daten vom Vortag übernommen');
+  showToast(t('toast_copied'));
 }
 
 function saveAutoCopy() {
@@ -1977,7 +2322,7 @@ function toggleReminder() {
         if (perm !== 'granted') {
           settings.enabled = false;
           localStorage.setItem(REMINDER_KEY, JSON.stringify(settings));
-          showToast('Benachrichtigungen nicht erlaubt');
+          showToast(t('toast_notif_denied'));
         }
         updateReminderUI();
         scheduleReminder();
@@ -1986,7 +2331,7 @@ function toggleReminder() {
     } else if ('Notification' in window && Notification.permission === 'denied') {
       settings.enabled = false;
       localStorage.setItem(REMINDER_KEY, JSON.stringify(settings));
-      showToast('Benachrichtigungen blockiert');
+      showToast(t('toast_notif_blocked'));
     }
   }
   updateReminderUI();
@@ -2012,9 +2357,11 @@ function updateReminderStatus() {
   const settings = loadReminderSettings();
   const status = document.getElementById('reminder-status');
   if (settings.enabled) {
-    status.textContent = `Erinnerung aktiv: täglich um ${settings.time || '19:00'} Uhr`;
+    const suffix = t('reminder_on_suffix') ? ' ' + t('reminder_on_suffix') : '';
+    status.textContent = `${t('reminder_on_prefix')} ${settings.time || '19:00'}${suffix}`;
+    status.style.color = '';
   } else {
-    status.textContent = 'Erinnerung deaktiviert';
+    status.textContent = t('reminder_off');
     status.style.color = '#999';
   }
 }
@@ -2041,7 +2388,7 @@ function sendReminder() {
 
   if ('Notification' in window && Notification.permission === 'granted') {
     new Notification('Youkidoc Allergie', {
-      body: 'Vergiss nicht, deine heutigen Allergiebeschwerden einzutragen!',
+      body: t('notif_reminder'),
       icon: 'icon-192x192.png',
       tag: 'youkidoc-reminder'
     });
@@ -2049,6 +2396,8 @@ function sendReminder() {
 }
 
 // ---- Init ----
+
+applyLang(currentLang);
 
 const db = loadData();
 const todayEntry = db[todayStr()] || null;
@@ -2060,6 +2409,22 @@ if (todayEntry) {
 loadAutoCopy();
 updateReminderUI();
 scheduleReminder();
+
+// Auto-refresh date at midnight (or when tab regains focus on a new day)
+let _lastKnownDate = todayStr();
+function checkDateChange() {
+  const newDate = todayStr();
+  if (newDate !== _lastKnownDate) {
+    _lastKnownDate = newDate;
+    currentEditDate = null;
+    document.getElementById('home-date').textContent = formatDateDE(newDate);
+    const freshDb = loadData();
+    loadFormData(freshDb[newDate] || null);
+    if (!freshDb[newDate]) applyAutoCopy();
+  }
+}
+setInterval(checkDateChange, 60000); // check every minute
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDateChange(); });
 </script>
 </body>
 </html>
