@@ -2420,7 +2420,7 @@ function sendReminder() {
   if (db[today]) return; // Already has entry for today
 
   if ('Notification' in window && Notification.permission === 'granted') {
-    new Notification('Youkidoc Allergie', {
+    new Notification('Beschwerdetagebuch', {
       body: t('notif_reminder'),
       icon: 'icon-192x192.png',
       tag: 'youkidoc-reminder'
