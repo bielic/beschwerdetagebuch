@@ -1,4 +1,4 @@
-const CACHE_NAME = 'youkidoc-v3';
+const CACHE_NAME = 'beschwerdetagebuch-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
