@@ -2029,7 +2029,7 @@ async function doExportPDF() {
     // ── Header ──────────────────────────────────────────────────────────
     let y = MY + 6;
     pdf.setFontSize(13); pdf.setTextColor(29, 158, 117);
-    pdf.text('Youkidoc Allergie Beschwerdetagebuch', MX, y);
+    pdf.text('Beschwerdetagebuch', MX, y);
     pdf.setFontSize(10); pdf.setTextColor(70); pdf.setFont(undefined, 'normal');
     if (patientName) {
       y += 5.5; pdf.setFontSize(11); pdf.setFont(undefined, 'bold');
