@@ -780,39 +780,64 @@
     <div class="stats-shared-legend" id="shared-legend"></div>
   </div>
 
-  <!-- INFO SCREEN -->
-  <div id="screen-info" class="screen">
+  <!-- SETTINGS SCREEN (Erinnerung + Sprache + Daten + Info) -->
+  <div id="screen-settings" class="screen">
     <div class="app-header">
-      <div class="app-subtitle" data-i18n="nav_info">Info</div>
+      <div class="app-subtitle" data-i18n="nav_settings">Einstellungen</div>
     </div>
 
-    <div class="info-card">
-      <div class="info-role" data-i18n="info_developed">Entwickelt von</div>
-      <div class="info-name">Dr. med. et phil. Christian Bieli</div>
-      <div class="info-specialty">Facharzt Kinder- und Jugendmedizin<br>Schwerpunkt Pädiatrische Pneumologie</div>
-
-      <div class="info-contact">
-        <div class="info-contact-title" data-i18n="info_contact">Kontakt</div>
-        <div class="info-line">
-          Sprechstunde Pneumologie<br>
-          Youkidoc<br>
-          Güterstrasse 154<br>
-          4053 Basel<br>
-          <a href="mailto:christian.bieli@youkidoc.ch">christian.bieli@youkidoc.ch</a>
-        </div>
+    <!-- ── Erinnerung ── -->
+    <div class="settings-section-header" data-i18n="nav_reminder">🔔 Erinnerung</div>
+    <div class="reminder-card">
+      <div class="reminder-title" data-i18n="reminder_title_h">Tägliche Erinnerung</div>
+      <div class="reminder-desc" data-i18n="reminder_desc">Erhalte eine tägliche Benachrichtigung, damit du nicht vergisst, deine Allergiebeschwerden einzutragen.</div>
+      <div class="reminder-toggle-row">
+        <span class="reminder-toggle-label" data-i18n="reminder_enable">Erinnerung aktivieren</span>
+        <div class="toggle-switch" id="reminder-toggle" onclick="toggleReminder()"></div>
       </div>
+      <div class="reminder-time-row" style="margin-top:14px;">
+        <label data-i18n="time_label">Uhrzeit</label>
+        <input type="time" id="reminder-time" value="19:00" onchange="saveReminderSettings()">
+      </div>
+      <div class="reminder-status" id="reminder-status"></div>
+    </div>
+    <div class="reminder-card">
+      <div class="reminder-title" data-i18n="note_title">Hinweis</div>
+      <div class="reminder-desc" data-i18n="note_desc">Die Erinnerung funktioniert über Browser-Benachrichtigungen. Dein Browser muss Benachrichtigungen erlauben und die App muss als PWA installiert sein, damit Erinnerungen zuverlässig funktionieren.</div>
     </div>
 
-    <div class="info-version" id="app-version">Youkidoc Beschwerdetagebuch v1.5</div>
-  </div>
-
-  <!-- DATA SCREEN -->
-  <div id="screen-data" class="screen">
-    <div class="app-header">
-      <div class="app-subtitle" data-i18n="data_subtitle">Daten verwalten</div>
+    <!-- ── Sprache ── -->
+    <div class="settings-section-header" data-i18n="nav_lang">🌐 Sprache</div>
+    <div class="lang-screen-grid" style="padding-top:8px;padding-bottom:4px;">
+      <button class="lang-card active" data-lang="de" onclick="applyLang('de')">
+        <span class="lang-card-flag">🇩🇪</span>
+        <div class="lang-card-info"><div class="lang-card-name">Deutsch</div><div class="lang-card-native">German</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="en" onclick="applyLang('en')">
+        <span class="lang-card-flag">🇬🇧</span>
+        <div class="lang-card-info"><div class="lang-card-name">English</div><div class="lang-card-native">Englisch</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="sq" onclick="applyLang('sq')">
+        <span class="lang-card-flag">🇦🇱</span>
+        <div class="lang-card-info"><div class="lang-card-name">Shqip</div><div class="lang-card-native">Albanisch</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="ta" onclick="applyLang('ta')">
+        <span class="lang-card-flag">🇱🇰</span>
+        <div class="lang-card-info"><div class="lang-card-name">தமிழ்</div><div class="lang-card-native">Tamil</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="es" onclick="applyLang('es')">
+        <span class="lang-card-flag">🇪🇸</span>
+        <div class="lang-card-info"><div class="lang-card-name">Español</div><div class="lang-card-native">Spanisch</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
     </div>
 
-    <!-- CSV Export -->
+    <!-- ── Daten ── -->
+    <div class="settings-section-header" data-i18n="nav_data">💾 Daten</div>
     <div class="data-card">
       <div class="data-card-title">📊 <span data-i18n="csv_title">CSV-Export</span></div>
       <div class="data-card-desc" data-i18n="csv_desc">Exportiere deine Einträge als CSV-Datei für einen bestimmten Zeitraum.</div>
@@ -824,23 +849,17 @@
       </div>
       <button class="data-action-btn primary" onclick="exportCSV()" data-i18n="csv_btn">CSV herunterladen</button>
     </div>
-
-    <!-- JSON Backup -->
     <div class="data-card">
       <div class="data-card-title">💾 <span data-i18n="backup_title">Backup (JSON)</span></div>
       <div class="data-card-desc" data-i18n="backup_desc">Lade alle gespeicherten Daten als JSON-Datei herunter.</div>
       <button class="data-action-btn primary" onclick="exportJSON()" data-i18n="backup_btn">Backup herunterladen</button>
     </div>
-
-    <!-- JSON Import -->
     <div class="data-card">
       <div class="data-card-title">📥 <span data-i18n="import_title">Daten importieren</span></div>
       <div class="data-card-desc" data-i18n="import_desc">Stelle Daten aus einem JSON-Backup wieder her. Bestehende Einträge für gleiche Tage werden überschrieben.</div>
       <input type="file" accept=".json" id="import-file" class="data-file-input" onchange="importJSON(this)">
       <label for="import-file" class="data-file-label" data-i18n="import_file_btn">📂 JSON-Datei auswählen</label>
     </div>
-
-    <!-- Delete Data -->
     <div class="data-card">
       <div class="data-card-title">🗑 <span data-i18n="delete_title">Daten löschen</span></div>
       <div class="data-card-desc" data-i18n="delete_desc">Lösche einen einzelnen Eintrag oder alle gespeicherten Daten.</div>
@@ -854,35 +873,22 @@
         <button class="data-action-btn danger" onclick="deleteAll()" data-i18n="delete_all_btn">Alle Daten löschen</button>
       </div>
     </div>
-  </div>
 
-  <!-- REMINDER SCREEN -->
-  <div id="screen-reminder" class="screen">
-    <div class="app-header">
-      <div class="app-subtitle" data-i18n="nav_reminder">Erinnerung</div>
-    </div>
-
-    <div class="reminder-card">
-      <div class="reminder-title" data-i18n="reminder_title_h">Tägliche Erinnerung</div>
-      <div class="reminder-desc" data-i18n="reminder_desc">Erhalte eine tägliche Benachrichtigung, damit du nicht vergisst, deine Allergiebeschwerden einzutragen.</div>
-
-      <div class="reminder-toggle-row">
-        <span class="reminder-toggle-label" data-i18n="reminder_enable">Erinnerung aktivieren</span>
-        <div class="toggle-switch" id="reminder-toggle" onclick="toggleReminder()"></div>
+    <!-- ── Info ── -->
+    <div class="settings-section-header" data-i18n="nav_info">ℹ️ Info</div>
+    <div class="info-card">
+      <div class="info-role" data-i18n="info_developed">Entwickelt von</div>
+      <div class="info-name">Dr. med. et phil. Christian Bieli</div>
+      <div class="info-specialty">Facharzt Kinder- und Jugendmedizin<br>Schwerpunkt Pädiatrische Pneumologie</div>
+      <div class="info-contact">
+        <div class="info-contact-title" data-i18n="info_contact">Kontakt</div>
+        <div class="info-line">
+          Sprechstunde Pneumologie<br>Youkidoc<br>Güterstrasse 154<br>4053 Basel<br>
+          <a href="mailto:christian.bieli@youkidoc.ch">christian.bieli@youkidoc.ch</a>
+        </div>
       </div>
-
-      <div class="reminder-time-row" style="margin-top:14px;">
-        <label data-i18n="time_label">Uhrzeit</label>
-        <input type="time" id="reminder-time" value="19:00" onchange="saveReminderSettings()">
-      </div>
-
-      <div class="reminder-status" id="reminder-status"></div>
     </div>
-
-    <div class="reminder-card">
-      <div class="reminder-title" data-i18n="note_title">Hinweis</div>
-      <div class="reminder-desc" data-i18n="note_desc">Die Erinnerung funktioniert über Browser-Benachrichtigungen. Dein Browser muss Benachrichtigungen erlauben und die App muss als PWA installiert sein, damit Erinnerungen zuverlässig funktionieren.</div>
-    </div>
+    <div class="info-version" id="app-version">Youkidoc Beschwerdetagebuch v1.6</div>
   </div>
 
   <!-- PDF EXPORT MODAL -->
