@@ -2182,7 +2182,7 @@ function exportCSV() {
   });
 
   if (rows.length === 1) { showToast(t('toast_no_entries')); return; }
-  downloadFile(rows.join('\n'), `youkidoc_export_${from}_${to}.csv`, 'text/csv;charset=utf-8');
+  downloadFile(rows.join('\n'), `beschwerden_export_${from}_${to}.csv`, 'text/csv;charset=utf-8');
   showToast(t('toast_csv_ok'));
 }
 
