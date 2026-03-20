@@ -2096,7 +2096,7 @@ async function doExportPDF() {
     pdf.text('Beschwerdetagebuch', MX, PH - 5);
 
     // 5) Save / Share
-    const filename = `youkidoc_${patientName ? patientName.replace(/\s+/g,'_') + '_' : ''}${todayStr()}.pdf`;
+    const filename = `beschwerden_${patientName ? patientName.replace(/\s+/g,'_') + '_' : ''}${todayStr()}.pdf`;
 
     if (emailAddr) {
       const pdfBlob = pdf.output('blob');
