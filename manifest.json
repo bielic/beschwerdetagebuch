@@ -1,7 +1,7 @@
 {
-  "name": "Youkidoc Allergie Beschwerdetagebuch",
-  "short_name": "Youkidoc Allergie",
-  "description": "Erfasse und verfolge deine Allergie-Beschwerden täglich",
+  "name": "Beschwerdetagebuch",
+  "short_name": "Beschwerden",
+  "description": "Erfasse und verfolge deine Beschwerden täglich",
   "start_url": "./index.html",
   "display": "standalone",
   "scope": ".",
