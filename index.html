@@ -2191,8 +2191,8 @@ function exportJSON() {
   const db = loadData();
   const keys = Object.keys(db);
   if (!keys.length) { showToast(t('toast_no_data')); return; }
-  const backup = { app: 'youkidoc_allergie', version: 1, exported: new Date().toISOString(), data: db };
-  downloadFile(JSON.stringify(backup, null, 2), `youkidoc_backup_${todayStr()}.json`, 'application/json');
+  const backup = { app: 'beschwerdetagebuch', version: 1, exported: new Date().toISOString(), data: db };
+  downloadFile(JSON.stringify(backup, null, 2), `beschwerden_backup_${todayStr()}.json`, 'application/json');
   showToast(t('toast_backup_ok'));
 }
 
