@@ -781,7 +781,51 @@
     <div class="stats-shared-legend" id="shared-legend"></div>
   </div>
 
-  <!-- SETTINGS SCREEN (Erinnerung + Sprache + Daten + Info) -->
+  <!-- LANGUAGE SCREEN -->
+  <div id="screen-lang" class="screen">
+    <div class="app-header">
+      <div class="app-subtitle" data-i18n="nav_lang">Sprache</div>
+    </div>
+    <div class="lang-screen-grid" style="padding:12px 16px 16px;">
+      <button class="lang-card active" data-lang="de" onclick="applyLang('de')">
+        <span class="lang-card-flag">🇩🇪</span>
+        <div class="lang-card-info"><div class="lang-card-name">Deutsch</div><div class="lang-card-native">German</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="en" onclick="applyLang('en')">
+        <span class="lang-card-flag">🇬🇧</span>
+        <div class="lang-card-info"><div class="lang-card-name">English</div><div class="lang-card-native">Englisch</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="sq" onclick="applyLang('sq')">
+        <span class="lang-card-flag">🇦🇱</span>
+        <div class="lang-card-info"><div class="lang-card-name">Shqip</div><div class="lang-card-native">Albanisch</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="ta" onclick="applyLang('ta')">
+        <span class="lang-card-flag">🇱🇰</span>
+        <div class="lang-card-info"><div class="lang-card-name">தமிழ்</div><div class="lang-card-native">Tamil</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="es" onclick="applyLang('es')">
+        <span class="lang-card-flag">🇪🇸</span>
+        <div class="lang-card-info"><div class="lang-card-name">Español</div><div class="lang-card-native">Spanisch</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="ti" onclick="applyLang('ti')">
+        <span class="lang-card-flag">🇪🇷</span>
+        <div class="lang-card-info"><div class="lang-card-name">ትግርኛ</div><div class="lang-card-native">Tigrinya</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
+      <button class="lang-card" data-lang="uk" onclick="applyLang('uk')">
+        <span class="lang-card-flag">🇺🇦</span>
+        <div class="lang-card-info"><div class="lang-card-name">Українська</div><div class="lang-card-native">Ukrainisch</div></div>
+        <span class="lang-card-check">✓</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- SETTINGS SCREEN (Erinnerung + Daten + Info) -->
   <div id="screen-settings" class="screen">
     <div class="app-header">
       <div class="app-subtitle" data-i18n="nav_settings">Einstellungen</div>
